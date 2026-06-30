@@ -552,6 +552,105 @@ footer .grass{color:var(--grass)}
 .sim-log .ln.ok{border-color:#6abe30;color:#bfe6a0}
 .sim-log .ln.no{border-color:#e05a4a;color:#e6b0a8}
 .sim-log .ln.prot{border-color:#7ec8ff;color:#a8d4ee}
+/* ═══ 덱 추천 ═══ */
+.dk-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.dk-h2{font-family:var(--f-title);font-size:20px;font-weight:800;margin:0}
+.dk-tools{display:flex;gap:8px;align-items:center}
+.dk-tools input{background:var(--stone-hi);border:2px solid var(--line);color:var(--fg);padding:7px 12px;border-radius:6px;font-family:var(--f-mono);font-size:13px;min-width:180px}
+.dk-addbtn{background:var(--gold);color:#1a1400;border:none;padding:7px 14px;border-radius:6px;font-weight:800;font-size:13px;cursor:pointer;font-family:var(--f-title)}
+.dk-addbtn:hover{filter:brightness(1.1)}
+.dk-cancelbtn{background:var(--stone-hi);color:var(--dim);border:2px solid var(--line);padding:7px 14px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer}
+.dk-card{background:var(--stone-lo);border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:border-color .15s}
+.dk-card.hot{border-left:4px solid #ff6b35}
+.dk-cardmain{display:flex;align-items:center;gap:14px;cursor:pointer;flex-wrap:wrap}
+.dk-cname{font-family:var(--f-title);font-size:16px;font-weight:800;min-width:120px;flex-shrink:0}
+.dk-cname .hot-t{color:#ff6b35;font-size:10px;display:block;font-weight:700;margin-top:1px}
+.dk-csyns{display:flex;gap:3px;flex-wrap:wrap;align-content:center}
+.dk-syi{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;border:1px solid rgba(255,255,255,.12);position:relative}
+.dk-syi.act{box-shadow:0 0 0 2px var(--gold),0 0 8px rgba(255,210,63,.35)}
+.dk-syi .cnt{position:absolute;bottom:-2px;right:-2px;background:#000;border-radius:3px;font-size:8px;padding:0 2px;color:var(--gold)}
+.dk-cweps{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.dk-ws{width:38px;height:38px;background:var(--stone-hi);border:1px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;position:relative}
+.dk-ws img{max-width:100%;max-height:100%;object-fit:contain}
+.dk-ws img{width:100%;height:100%;object-fit:contain}
+.dk-ws .q{font-size:11px;color:var(--faint)}
+.dk-ws .bn{position:absolute;top:0;left:2px;font-size:8px;font-weight:800;color:var(--gold);text-shadow:0 0 3px #000}
+.dk-score{font-family:var(--f-mono);font-size:20px;font-weight:800;color:var(--gold);flex-shrink:0;text-align:center;min-width:44px}
+.dk-score small{display:block;font-size:9px;color:var(--dim);font-weight:400}
+.dk-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:none}
+.dk-detail.open{display:block}
+.dk-dcols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.dk-dcols{grid-template-columns:1fr}}
+.dk-dtitle{font-size:12px;font-weight:700;color:var(--dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.dk-syrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.dk-syrow:last-child{border-bottom:none}
+.dk-syrow.inactive{opacity:.45}
+.dk-syb{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.dk-syc{font-family:var(--f-mono);font-size:15px;font-weight:800;color:var(--gold);min-width:20px;text-align:center}
+.dk-syn-nm{font-size:13px;font-weight:700}
+.dk-syn-brk{font-size:11px;color:var(--dim);margin-top:1px;font-family:var(--f-mono)}
+.dk-syn-brk .on{color:var(--gold);font-weight:800}
+.dk-syn-brk .cur{color:#5BD6A0;font-weight:800;text-decoration:underline}
+.dk-bnum{display:flex;flex-wrap:wrap;gap:5px}
+.dk-bitem{display:flex;align-items:center;gap:5px;background:var(--stone-hi);border:1px solid var(--line);border-radius:5px;padding:4px 8px;font-size:11px}
+.dk-bitem .n{font-family:var(--f-mono);color:var(--gold);font-weight:800;font-size:10px}
+.dk-bitem img{width:18px;height:18px;object-fit:contain}
+.dk-cactions{margin-top:10px;display:flex;gap:6px}
+.dk-cactions button{font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;font-weight:700;border:2px solid var(--line);background:var(--stone-hi);color:var(--fg)}
+.dk-cactions .del{color:#ff6b6b}
+.dk-empty{padding:30px 16px;color:var(--faint);font-size:13px;text-align:center}
+/* modal */
+.dk-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+.dk-modal{background:var(--stone-lo);border:2px solid var(--gold);border-radius:12px;padding:20px;max-width:540px;width:100%;max-height:86vh;overflow-y:auto}
+.dk-modal h3{font-family:var(--f-title);margin:0 0 14px}
+.dk-frow{margin-bottom:10px}
+.dk-frow label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.dk-frow input[type=text]{width:100%;background:var(--stone-hi);border:2px solid var(--line);color:var(--fg);padding:8px 10px;border-radius:6px;font-size:13px}
+.dk-sel{display:flex;flex-wrap:wrap;gap:4px;min-height:42px;padding:6px;background:var(--stone-hi);border:1px dashed var(--line);border-radius:6px;margin-bottom:8px;align-items:center}
+.dk-sel .ph{font-size:11px;color:var(--faint)}
+.dk-pick{display:flex;flex-wrap:wrap;gap:5px;max-height:240px;overflow-y:auto;border:1px solid var(--line);border-radius:6px;padding:8px}
+.dk-pi{width:42px;height:42px;border:2px solid var(--line);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;transition:border-color .1s}
+.dk-pi:hover{border-color:var(--gold)}
+.dk-pi.sel{border-color:#4FB0FF;background:rgba(79,176,255,.12)}
+.dk-pi img{width:100%;height:100%;object-fit:contain}
+.dk-pi .nm{position:absolute;top:1px;left:3px;font-size:9px;font-weight:800;color:var(--gold);text-shadow:0 0 3px #000,0 0 3px #000}
+.dk-pi .tx{font-size:8px;color:var(--faint);text-align:center;line-height:1.1}
+.dk-modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.dk-synprev{display:flex;flex-wrap:wrap;gap:6px;min-height:38px;padding:8px;background:var(--stone-hi);border:1px dashed var(--line);border-radius:6px;margin-bottom:8px;align-items:center}
+.dk-synprev .ph{font-size:11px;color:var(--faint)}
+.dk-spv{display:flex;align-items:center;gap:4px;background:var(--stone-lo);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.dk-spv.act{border-color:var(--gold);box-shadow:0 0 6px rgba(255,210,63,.25)}
+.dk-spv.inactive{opacity:.4}
+.dk-spv .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.dk-spv .ic img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.dk-spv .ic .lt{font-size:10px;font-weight:800;color:#fff;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.dk-spv .nm{font-size:11px;font-weight:700;color:var(--fg)}
+.dk-spv .cn{font-family:var(--f-mono);font-size:12px;font-weight:800;color:var(--gold)}
+.dk-spv .stage{font-family:var(--f-mono);font-size:9px;color:var(--grass,#5BD6A0);font-weight:700}
+
+
+/* 시너지 아이콘 이미지 */
+.dk-syi img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.dk-syi{overflow:visible;background:transparent!important;border:none}
+.dk-syi.act{box-shadow:none;filter:drop-shadow(0 0 4px var(--gold))}
+.dk-syi .lt{font-size:10px;font-weight:800;color:#fff}
+.dk-syb.img{background:transparent!important}
+.dk-syb.img img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+/* 무기 강화단계 뱃지 */
+.dk-ws .lv{position:absolute;bottom:-3px;right:-3px;font-size:10px;font-weight:800;color:#fff;background:var(--grass,#5BD6A0);border-radius:4px;padding:0 3px;line-height:1.35;box-shadow:0 0 0 1px rgba(0,0,0,.6)}
+/* 무기 + 강화구간(밑에 표시) — 마크 핫바 스타일 */
+.dk-wcell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dk-wlv{font-family:var(--f-mono);font-size:10px;font-weight:800;color:var(--lvc,var(--grass,#5BD6A0));text-shadow:1px 1px 0 rgba(0,0,0,.65);line-height:1;letter-spacing:-.3px}
+.dk-wlv.none{color:var(--faint)}
+/* 에디터 선택 무기 + 강화단계 선택 */
+.dk-sel-head{width:100%;font-size:11px;color:var(--dim);margin-bottom:4px}
+.dk-selitem{display:flex;align-items:center;gap:8px;background:var(--stone-hi);border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin-bottom:4px;width:100%}
+.dk-selinfo{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dk-selnm{font-size:12px;font-weight:600}
+.dk-lvsel{background:var(--stone-lo);border:1px solid var(--line);color:var(--gold);border-radius:4px;padding:2px 6px;font-family:var(--f-mono);font-size:11px;font-weight:700}
+.dk-selrm{background:transparent;border:none;color:#ff6b6b;cursor:pointer;font-size:13px;padding:2px 6px}
+.dk-sel{flex-direction:column;align-items:stretch}
+
 </style>
 </head>
 <body>
@@ -572,6 +671,7 @@ footer .grass{color:var(--grass)}
       <button class="tab" data-view="synergy">시너지</button>
       <button class="tab" data-view="weapon">무기</button>
       <button class="tab" data-view="planner">시너지 추천</button>
+      <button class="tab" data-view="deck">🃏 덱 추천</button>
       <button class="tab" data-view="market">💰 무기 시세</button>
       <button class="tab" data-view="sim">🔨 강화 시뮬</button>
       <button class="tab" data-view="textures">텍스처</button>
@@ -817,6 +917,36 @@ footer .grass{color:var(--grass)}
   </section>
 
   <!-- ───────── 무기 시세 ───────── -->
+  
+  <section class="view" id="view-deck">
+    <div class="dk-head">
+      <h2 class="dk-h2">🃏 추천 덱</h2>
+      <div class="dk-tools">
+        <input type="text" id="dk-search" placeholder="덱 이름·무기 검색…">
+        <button id="dk-add-btn" class="dk-addbtn">+ 새 덱</button>
+      </div>
+    </div>
+    <div id="dk-list"></div>
+
+    <div id="dk-modal" class="dk-modal-bg" style="display:none">
+      <div class="dk-modal">
+        <h3 id="dk-modal-title">새 덱 만들기</h3>
+        <div class="dk-frow"><label>덱 이름</label><input type="text" id="dk-name" maxlength="30"></div>
+        <div class="dk-frow"><label>🔥 HOT 표시</label><input type="checkbox" id="dk-hot"></div>
+        <div class="dk-frow"><label>설명 (선택)</label><input type="text" id="dk-desc" maxlength="60"></div>
+        <div class="dk-frow"><label>무기 (클릭 순서 = 빌드 순서, 최대 9개)</label></div>
+        <div id="dk-sel" class="dk-sel"></div>
+        <div class="dk-frow"><label>활성 시너지 미리보기</label></div>
+        <div id="dk-synprev" class="dk-synprev"></div>
+        <div id="dk-pick" class="dk-pick"></div>
+        <div class="dk-modal-btns">
+          <button id="dk-save" class="dk-addbtn">저장</button>
+          <button id="dk-cancel" class="dk-cancelbtn">취소</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="view" id="view-market">
     <h2 class="sec-h sh">무기 시세</h2>
     <div class="mk-top">
@@ -1136,9 +1266,10 @@ const BAKED_TEX = {"골렘의 창":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUg
 const LOCKED = true;
 
 /* ── 사용자 추가 데이터(무기/시너지) ── 아래 줄들은 "배포용 파일 만들기"가 자동으로 다시 씁니다. 직접 손대지 않아도 됩니다. */
-let BAKED_ADD_WEAPONS = [{"name":"몰락한 왕의 검","tiers":[null,null,null,null]},{"name":"무지개 소드","tiers":["heal","sage","dimension","upzy8dc"]},{"name":"각성된 탐욕의 검","tiers":["ishtal","goldbull","evil","heal"]},{"name":"아르마의 단검","tiers":["evil","heretic","void","challenger"]},{"name":"속박의 검","tiers":["dimension","fortress","upzy8dc","umptoma"]}]; /*ADDW_END*/
+let BAKED_ADD_WEAPONS = [{"name":"몰락한 왕의 검","tiers":[null,null,null,null]},{"name":"무지개 소드","tiers":["heal","sage","dimension","upzy8dc"]},{"name":"각성된 탐욕의 검","tiers":["ishtal","goldbull","evil","heal"]},{"name":"아르마의 단검","tiers":["evil","heretic","void","challenger"]},{"name":"속박의 검","tiers":["dimension","fortress","upzy8dc","umptoma"]},{"name":"로스트 베인","tiers":[null,null,null,null]},{"name":"챈슬러의 검","tiers":[null,null,null,null]}]; /*ADDW_END*/
 let BAKED_ADD_SYN = {"umptoma":{"name":"열혈 팬","color":"#64f000","desc":"시너지가 켜질 때 마다 임시로 강한 아이템을 획득합니다.\n\n[!] 임시로 얻은 아이템은 이 시너지를 제외하고 어떤 경로에서든지 획득할 수 없습니다.","breaks":[[2,"로스트 베인"],[5,"첸슬러의 검"],[8,"몰락한 욍의 검"]]},"upzy8dc":{"name":"거대 메크","color":"#0048f0","desc":"일정 단계 도달 시 조정할 수 있는 거대 로봇을 소환합니다.\n\n[!] 로봇이 파괴되면 60초 뒤 다시 재생성 할 수 있습니다.","breaks":[[3,"프로토콜 1단계"],[5,"프로토콜 2단계"],[7,"프로토콜 3단계"]]},"ignite":{"name":"점화단","color":"#ff4d1f","desc":"아이템 클릭 시, 바라보는 방향으로 빠르게 돌진합니다. 또한 돌진 중에 피해 반사 효과가 지급 받습니다.","breaks":[[2,"10데미지, 쿨타임 4초"],[3,"15데미지, 쿨타임 2초"],[4,"22데미지, 쿨타임 1초"]]},"evil":{"name":"악령","color":"#9486d0","desc":"아이템 클릭 시, 주변 플레이어에게 핫바에 있는 아이템의 쿨타임을 강제로 증가합니다.","breaks":[[2,"1개, 1.5초"],[4,"3개, 4초"],[6,"5개, 8초"],[8,"핫바에 있는 모든 아이템 쿨타임 증가!"]]},"void":{"name":"공허","color":"#6e54d4","desc":"이 엔티티는 소환한 유저를 제외하고 나머지 엔티티들을 공격합니다.\n\n※ 공허 생명체 소환은 도적의 단검 스킬 사용 시 발동됩니다.","breaks":[[3,"튼실한 소"],[5,"든든한 낙타"],[7,"단단한 철 골렘"],[9,"심연의 워든"]]},"fortress":{"name":"요새","color":"#6e93c4","desc":"플레이어를 단단하게 만들어주는 저항 효과를 시간제한 없이 부여합니다.","breaks":[[2,"저항 Ⅰ"],[4,"저항 Ⅱ"],[6,"저항 Ⅲ"],[8,"저항 Ⅳ + 최대 피해량 5 데미지로 변환"]]},"heal":{"name":"치유","color":"#6fd86f","desc":"플레이어의 체력이 일정 시간마다 회복합니다.","breaks":[[2,"5초"],[4,"3초"],[6,"2초"],[8,"0.5초"]]},"flame":{"name":"화염","color":"#ff7a2e","desc":"엔티티를 때렸을 때, 일정 체력 비율에 따라 상대방을 처형합니다.","breaks":[[2,"체력 10%일 때 처형"],[3,"체력 14%일 때 처형"],[4,"체력 25%일 때 처형"],[5,"체력 45%일 때 처형"]]}}; /*ADDS_END*/
 let BAKED_DEL_WEP = []; /*DELW_END*/
+let BAKED_DECKS = [{"name":"5공허 4난동꾼","weapons":[{"name":"도적의 단검","lv":5},{"name":"바이킹의 방패","lv":8},{"name":"검은 마법사의 방패","lv":5},{"name":"단소의 검","lv":5},{"name":"어인 가라데","lv":5},{"name":"카오스의 방패","lv":5},{"name":"암흑의 검","lv":5},{"name":"반의 창","lv":5},{"name":"블레이즈의 도끼","lv":5}],"buildOrder":[{"name":"도적의 단검","lv":5},{"name":"바이킹의 방패","lv":8},{"name":"검은 마법사의 방패","lv":5},{"name":"단소의 검","lv":5},{"name":"어인 가라데","lv":5},{"name":"카오스의 방패","lv":5},{"name":"암흑의 검","lv":5},{"name":"반의 창","lv":5},{"name":"블레이즈의 도끼","lv":5}],"hot":true,"desc":""},{"name":"5서리 2치유","weapons":[{"name":"[Ice] 블레이즈의 도끼","lv":5},{"name":"[Ice] 늑대의 도끼","lv":5},{"name":"[Ice] 설원의 창","lv":5},{"name":"[Ice] 팔라딘의 방패","lv":5},{"name":"거북 마스터의 검","lv":5},{"name":"늑대의 도끼","lv":5},{"name":"속박의 검","lv":5},{"name":"단소의 검","lv":5},{"name":"심해의 낫","lv":5}],"buildOrder":[{"name":"[Ice] 블레이즈의 도끼","lv":5},{"name":"[Ice] 늑대의 도끼","lv":5},{"name":"[Ice] 설원의 창","lv":5},{"name":"[Ice] 팔라딘의 방패","lv":5},{"name":"거북 마스터의 검","lv":5},{"name":"늑대의 도끼","lv":5},{"name":"속박의 검","lv":5},{"name":"단소의 검","lv":5},{"name":"심해의 낫","lv":5}],"hot":false,"desc":""},{"name":"3거대 메크 3저격수","weapons":[{"name":"어인 가라데","lv":5},{"name":"거북 마스터의 검","lv":5},{"name":"반의 창","lv":5},{"name":"오메가 소드","lv":5},{"name":"빛의 창","lv":5},{"name":"단소의 검","lv":5},{"name":"라프의 창","lv":5},{"name":"바이킹의 방패","lv":5},{"name":"세르히오의 망치","lv":5}],"buildOrder":[{"name":"어인 가라데","lv":5},{"name":"거북 마스터의 검","lv":5},{"name":"반의 창","lv":5},{"name":"오메가 소드","lv":5},{"name":"빛의 창","lv":5},{"name":"단소의 검","lv":5},{"name":"라프의 창","lv":5},{"name":"바이킹의 방패","lv":5},{"name":"세르히오의 망치","lv":5}],"hot":true,"desc":""},{"name":"5열혈 팬 4난동꾼","weapons":[{"name":"어둠의 카타나","lv":5},{"name":"크릴의 창","lv":5},{"name":"팔라딘의 방패","lv":null},{"name":"팬덤의 망치","lv":5},{"name":"늑대의 도끼","lv":5},{"name":"바이킹의 방패","lv":5},{"name":"골렘의 창","lv":5},{"name":"카오스의 방패","lv":5},{"name":"챈슬러의 검","lv":null}],"buildOrder":[{"name":"어둠의 카타나","lv":5},{"name":"크릴의 창","lv":5},{"name":"팔라딘의 방패","lv":null},{"name":"팬덤의 망치","lv":5},{"name":"늑대의 도끼","lv":5},{"name":"바이킹의 방패","lv":5},{"name":"골렘의 창","lv":5},{"name":"카오스의 방패","lv":5},{"name":"챈슬러의 검","lv":null}],"hot":false,"desc":""},{"name":"5저격수 3공허","weapons":[{"name":"반의 창","lv":5},{"name":"크릴의 창","lv":5},{"name":"빛의 창","lv":5},{"name":"라프의 창","lv":5},{"name":"골렘의 창","lv":5},{"name":"블레이즈의 도끼","lv":5},{"name":"하트 브레이커","lv":5},{"name":"암흑의 검","lv":5},{"name":"선동자의 망치","lv":5}],"buildOrder":[{"name":"반의 창","lv":5},{"name":"크릴의 창","lv":5},{"name":"빛의 창","lv":5},{"name":"라프의 창","lv":5},{"name":"골렘의 창","lv":5},{"name":"블레이즈의 도끼","lv":5},{"name":"하트 브레이커","lv":5},{"name":"암흑의 검","lv":5},{"name":"선동자의 망치","lv":5}],"hot":false,"desc":""},{"name":"7공허 2전사","weapons":[{"name":"암흑의 검","lv":5},{"name":"도적의 단검","lv":5},{"name":"흑도","lv":5},{"name":"반의 창","lv":5},{"name":"하트 브레이커","lv":5},{"name":"검은 마법사의 방패","lv":5},{"name":"카오스의 방패","lv":5},{"name":"블레이즈의 도끼","lv":5},{"name":"세르히오의 망치","lv":5}],"buildOrder":[{"name":"암흑의 검","lv":5},{"name":"도적의 단검","lv":5},{"name":"흑도","lv":5},{"name":"반의 창","lv":5},{"name":"하트 브레이커","lv":5},{"name":"검은 마법사의 방패","lv":5},{"name":"카오스의 방패","lv":5},{"name":"블레이즈의 도끼","lv":5},{"name":"세르히오의 망치","lv":5}],"hot":true,"desc":""},{"name":"뉴비덱","weapons":[{"name":"도적의 단검","lv":1},{"name":"카오스의 방패","lv":1},{"name":"흑도","lv":1},{"name":"블레이즈의 도끼","lv":1},{"name":"바이킹의 방패","lv":1}],"buildOrder":[{"name":"도적의 단검","lv":1},{"name":"카오스의 방패","lv":1},{"name":"흑도","lv":1},{"name":"블레이즈의 도끼","lv":1},{"name":"바이킹의 방패","lv":1}],"hot":true,"desc":""}]; /*DECKS_END*/
 let BAKED_DEL_SYN = ["seal"]; /*DELS_END*/
 const ADD_W_KEY="wwrpg_add_weapons_v1", ADD_S_KEY="wwrpg_add_syn_v1", DEL_W_KEY="wwrpg_del_wep_v1", DEL_S_KEY="wwrpg_del_syn_v1";
 // 기본 내장 무기/시너지 식별용 (병합 전에 캡처) — 삭제/수정이 내장인지 추가분인지 구분
@@ -1471,7 +1602,7 @@ function runAuto(){
   const ru=$("#sm-run");if(ru)ru.addEventListener("click",runAuto);
 })();
 
-const VIEWS=["home","guide","glossary","synergy","weapon","planner","market","sim","textures","editor"];
+const VIEWS=["home","guide","glossary","synergy","weapon","planner","deck","market","sim","textures","editor"];
 const state={view:"home",filter:new Set(),q:"",glCat:"all",texFilter:"all"};
 document.querySelectorAll(".tab[data-view]").forEach(t=>t.addEventListener("click",()=>{
   state.view=t.dataset.view;
@@ -1708,6 +1839,7 @@ function render(){
   else if(state.view==="weapon")renderWeapon();
   else if(state.view==="planner"){ renderHotbar(); renderTally(); renderTarget(); }
   else if(state.view==="textures")renderTextures();
+  else if(state.view==="deck")renderDeck();
   else if(state.view==="market")renderMarket();
   else if(state.view==="sim")renderSim();
   else if(state.view==="editor")renderEditor();
@@ -1717,6 +1849,7 @@ function render(){
    ║  홈 (메뉴 허브 타일)                    ║
    ╚══════════════════════════════════════╝ */
 const ICON={
+  deck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="13" height="16" rx="1.5"/><path d="M7 9h5M7 13h5"/><path d="M18 7l3 1-3 11-3-1"/></svg>',
   guide:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>',
   glossary:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"/><path d="M5 18a2 2 0 0 1 2-2h12"/></svg>',
   synergy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><circle cx="12" cy="17" r="3"/><path d="M9 10l3 4M15 10l-3 4"/></svg>',
@@ -1732,6 +1865,7 @@ const TILES=[
   {v:"synergy", t:"시너지 도감", d:"각 시너지의 단계별 효과와 그 시너지를 켜는 무기를 한눈에.", c:"#B07CF0",       cnt:()=>Object.keys(SYNERGIES).length+" 시너지"},
   {v:"weapon",  t:"무기 도감",   d:"무기별 +1~10 강화 구간에서 열리는 시너지를 정리.", c:"var(--gold)",          cnt:()=>WEAPONS.length+" 무기"},
   {v:"planner", t:"시너지 추천", d:"핫바 9칸을 짜보며 활성 시너지를 실시간 계산. 목표 자동 채우기 지원.", c:"#4FB0FF", cnt:()=>"핫바 9칸"},
+  {v:"deck",    t:"추천 덱",     d:"메타 덱 조합과 활성 시너지·빌드 순서를 한눈에. 직접 덱을 만들고 수정할 수 있습니다.", c:"#B07CF0", cnt:()=>{const dl=LOCKED?BAKED_DECKS:DECK_LIST;return (dl?dl.length:0)+" 덱";}},
   {v:"market",  t:"무기 시세",   d:"무기별 가격(시세)과 +1~+10 단계별 OVR·성공확률·가격 표.", c:"#5BD6A0",  cnt:()=>WEAPON_MARKET.length+" 무기"},
   {v:"sim",     t:"강화 시뮬레이션", d:"재료 5칸을 넣어 실제 강화 확률을 계산하고, 성공·하락을 시뮬.", c:"#FF8A4C", cnt:()=>ENHANCEABLE().length+" 강화무기"},
   {v:"textures",t:"텍스처 바꾸기",d:"무기 아이콘 이미지를 원하는 PNG로 직접 교체. 도감 전체에 반영.", c:"var(--redstone)", cnt:()=>{const n=Object.keys(TEX_OVER).length;return n?n+"개 변경됨":WEAPONS.length+" 무기";}},
@@ -1892,6 +2026,212 @@ $("#tex-reset-all").addEventListener("click",()=>{
 });
 
 // ── 배포용 파일 만들기 (텍스처 + 추가 무기/시너지를 구워 넣고 편집 잠금) ──
+/* ═══ 덱 추천 시스템 ═══ */
+const SYN_ICONS = {"fortress":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACOSURBVDhPzZHRCcAgEENdwyGczH0cyRncxvI+Imq9coV+NBBQ7yWIhvALpZT67lcMG9Ra67VWs8Bk2GiASykLwJqzmbkVaIABVaLwPD8W5JwHqKvKcxAGdimIMXbMwArKMOJHwVz0FMbHoMQQyCrg+q4Cy66C04sr7CrQb5ysB9xzi6wSV1jSN+3euU90AR6gYrV/vkWqAAAAAElFTkSuQmCC","rampager":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAMAAADXT/YiAAAAGFBMVEX///8AAADiAAMBAAcABQD/o50AAASEEQ6yrBArAAAAAXRSTlMAQObYZgAAACxJREFUeNodxokNADAMwkCgT/bfuMXIEifJbkXyW9LOSWfdHvKAsSAoAQQMPBmYAInoV6NAAAAAAElFTkSuQmCC","flame":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAB7klEQVRIDWP4//8/Ay0xw6gFNLEACCAELSwAmbvJAWwBUZaQYwHcB7SygHY+AJm30QGCoRbAMcx3ZFsA0rvZieH/7kCG/4cTmf5vc4cYDLIMxibZAnRXbnEFGp7A9P9MMQvYEhA+ls70f3cAbl/gNXxfOOP/XUDNG+2hFrgw/N8TzPD/dBHL/yttXP8vN3P+P10AsQxkOTZf4DR8hzfD/+MZTP+PZzL/3+GDsODOTJH/rw7YgV1+Kp/l/9ky1v+XGjn+H4hkJM4CmOH7Ixj/n69m+//6sPP/pxs1/x9JBgZFEAPYcBAA0SB1h+KA6irZwD5CjnCCFhxNYfr/aKXC/1/vd/7/dC0baIkW2NWgoAAZ/v58FBhf7+UF8z/fKvm/3ZOABTAXgFy0B+jai/XsEM03C/8/WqX0/+Vey/83+vnAlsIwyJLn2w3+P16rCk++WC2AGQ4KChAGWQIKbxgAGfZ4jfL/N0fd/iMDkAWv9tv8P1PCCk7GeC0AGXx/oRTYkDszhP9/vJwMNhgGQD5B5v/99RwYNKVgfCSJCX8kwyyAufDnmw3/vz3q+//1YSfYYBB+ukkLbvif73fBBj9eowLHhCwAyz1cLv//3Sl/OI0NgCIdBECGnqtgBTtsVwADURZg5F4SMfE5ebROhmEAB77qoiaLq+QAAAAASUVORK5CYII=","duelist":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACLSURBVDjLY2AgA7i4uPyHYbI0w4CEhMR/sjTv27ePdAOopvnGjRs00owtVEF8kCaibAYpzs7OhhtCkmZkQ6ZNmwZWDNIEYpPkZ5gBIAxyDckBhu4VkjV7mon+z/CTA2uEBSrRhoA0d6ar/9eQ4wZrAGmEGUQw9EEYZDNMMzKAGUTQzyT7F90Gcg0AAD6TuZ57IzT4AAAAAElFTkSuQmCC","challenger":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB5UlEQVQ4T2MgBji5B/0HYSgXBbBAaQyQZajEIMLLxXCEU+1/eFQMg5quJUj4/76d6xhDYzL/v339kgHEZgSrRgPomvfs3s3g4uoKNiQ+xIlBQFCI4cP7dwyP7l1nZILqgQOQZh4OVhTNN69fYnj8+DHDrcvHGRau2QfXDFKPYQAInOHThmsGOdUvMIxBVlYW7ILmymwGcysHBjklTXCYYPUCKMBUVDUYxCTEoSIMDM5eYWDNMCAsKs5w8tgBTBeAvAAKnDu3bzC8evESLAayHab5zu3rDG/evAS7DASwuiA7OI1h6tpZYGd6eAUCNd0Ai4M0gwJQREQczHbg/cbIDJZBAjllqxlkVHUZeOXN/js7ZDCsW93F8O//PwYuLh4wjax50cWHqF4Iz5nLIMjDynDy1u3/WvImDCsPLAWHNijUQc5G1vzpx2+wHrgBIM3c7LwMlx8++J/qZAXWHOvszhjsGQ03BFnzhpvPwPrAYQDSzM7MwvDpy3uw5ry58xmiHNwZ33/5zTClK5QhQF0KrBgGYJpRQEDyhP9bl576r+yU+T+peBXYUGIAIyyTWFgXgZ1trWvB+PPvH4aVU5LBCggBcBiAEs2SBakMd/dNJ0kzCDDCkiQI+PD/ZJx2/h6URwxgYAAAkMnejRlw1AMAAAAASUVORK5CYII=","sage":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAASdJREFUOI1jYKAQMCJzNi1r+U+MJr+oGrg+OGNad87/0IR6vBrfP7/IwMDAwLBn5waGrNIpjAwMDAxMDAwMDAUuhkTZLCipD2fD9LAwMDAwvP74iYFh51GG49IzGTR0LPAacuPKCYZbO49C9CB7IdpU+b91mCdcoYy0BIbmJ09fMDAwMDAcXbWdYenpu4xwFzAwMDAsPX2XUdPx6f+wmGwUp8LA++cXGTR0GBhWLZkK18zAAA0DdH9WJIczVCSHw8UqksMZOmvasHoJbkBLWeB/PQNjrIrwARZkDiwAO+auhNuMzGdgYGAQEpXG7gJ0sH/reqxsGWkJhpayQHi04zRg57oVWNno0YzTAAYGiNORnY8NoBiAHH3IGvEZghKIM7vT8NpGEwAAJqtaA/FpP7oAAAAASUVORK5CYII=","void":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAB3SURBVDjL3ZLRDcAgCERZ4Ubw5+ZwBfcfxn5hTlDbfrYkF0ngXgJo9s8opfSoV6Zaa9IRtjK11sbrucKWZm02s6EInSAO0KIbSW4hCbCDuDmOMgFIpvl1B3E/JOc9AOgkh1ZX0DqAfAkA3aXNanLd/gltfmz6blyf+7ZHgBpcgwAAAABJRU5ErkJggg==","sniper":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACbSURBVDjLpZHLDYAgDEC5e/bqVSdwAi5eXEMTJnEB9mAbtqmWhKSSfvw0aUJS3mspzl0BV7g/kVKCnLMpWeYeaN6K09DBsY2gQVjf16EknpERJS1UAZrsmFUSQiigBHjvQXwnlXB3VBihGCNIOzEFOHbtzElUmNsslYgw7c5tt0pMAfu31ugWjKAKa+OboCR41FV6wiuw3fQX7gQ1nZsHGvl7NwAAAABJRU5ErkJggg==","heretic":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAFmSURBVHjanJS9SgNBFEbPhCALYsAigbVYU7hYhK2CQirRB7ATe0Ui+wBJlQdIHiC4+ARCKpvUaXZhg5BWYqFpBDdVQAg210J32M2PSfxgipm5c+535w6jDLvIIm3tFVimSS+UxFRl2FCTXijlqE8p6Oi1zH8A05c3jIP9zSGzgKf8EYBaG/IXYC3IKoCIkI0n0+FrfOMq7tgqQO7keN5J/voCQKbD17UBABh2kcRbEatVF0DKUV9KQUfKUV+AZSNdTlKGXdQOvs6u8H1/LmYwGOC6riillK7/dPeTbhjFbvi4f8A2dvA8j0qlAkAQBCkIgOu6c92R23OLUa1J4eYytbEIEEuX0w0jaVYPqXvPAGpUa4rjOBpQrVb1ofF4TKPRSGf/daAvK7nn+744jiNWzkgN0zSl3W4LIBkAq1Xn7nGUauEmygKMas10evkxpJTS9t8n01SMuZ34C2apMSABkSWxev17ACRnxMv4aVvaAAAAAElFTkSuQmCC","frost":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAz0lEQVQ4jb2VgQkDIQxFb8nO0fHaCaQT3A7dQChi+4VfPmmi0tY7+Ci55F2M0dtqrRuUUurq9VRo5EfeNgMGsJTSNIJPgZmlBfey/wCrswe0sh/g3AUzQJfswe07Hd1SRLXE/HzLTdYO3/3+eNvDjCmFYLzuuUlt8LErCWusAQRhZLC1MYGwxsgCjpohQRhPl9ykNl1B2BWEenACde5Bwz4m9BswY7sHRKHYcVsK2qZKsWzzRu2GLLVfp9tt+QH5+5FedgktuzYPveh/+TU9AXlAYU++tD/rAAAAAElFTkSuQmCC","umptoma":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAARCAYAAADQWvz5AAAA5klEQVQ4EWP4//8/Azk4JibmPzKfgRKDkA0jSzM6JsoghmCG/yCMzyAQJmjIzf+v/2/7fwFsGFkuAmls+rb2/+afZ/8z7Hb7z1Au+p/BkuE/SWGEbEjE877/DBss/jNM1fzPMF8LbhhRsQYyyPFzy//0r3P/7/p/5X/yl1n/GRYb/GeYZ4DiKqINAmGQq0A02FWUGATyYsSXyaQZBI8BoEHyd9IQLgGFDwhXSxA2CCMWgBqkryUhDMJjCNwgnIkMqJFhgfF/hskqeA0BG4QvtcJcxqCL3xCCLiIlH+IMI1Ix3jKGFAwALronBmuQDWkAAAAASUVORK5CYII=","berserk":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAAAIVBMVEUAAAAqbXYlt7gz///1//8qRFUYLDlAYnioAC//AEgqJDVefFCjAAAAAXRSTlMAQObYZgAAAHFJREFUeNqVjlEOwDAIQgtWu3n/A49mdU0/hzGRJx+0LWhPBxyUaOCRolE7+SYEaAali3SSpoEtBnadGv0WA+TdI/TrFWuIMQRBwwvYcN0R94WviRGZwzMV3yU8MsOJr5hNJmIsBJ1VtoTpycoUlf+lByi4Ab/hCMVLAAAAAElFTkSuQmCC","goldbull":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAUtJREFUOI3FkjFLw0AYhp96De1yg2Ag/oEOQsCS0Vl00b1bB6FLpZOjf0BcSrvp0C27gyD5DcFCIEPWDgYiOHQphCMOJZdcY10c/Jbjvvee93v5OPjvau0TXm4Oi33a9fOX5hoGJXjqrrE9F4CuNyZfT0n9GIBlJLVJaxcuQdFTqEQgegoAlQgAsjAyTNp1+Gr2CN0hedb/ERY9hc02VfD6AUBbw0+fOoklJ1hnw+1ls8DyIF9PUYnQCeCoMjBqszDOCoz1TpaR1M+1QZ71seREA+UOoJqahZEBa4Ng1eHUj3EGuzC1yGB7LpcDhSUnnIdzgOKg7pb6cQNeRhLbc3EGJ3S9MZb9ziaca+M2wOwtbYFTPNwfk/rVxHpclQjScASMDM1IkIVRY1HBqqOn/brEMsUdVYJg1TH6W1AaWuMr3144hWna7O9qf6pvmGqus2/fIRcAAAAASUVORK5CYII=","ignite":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAUCAYAAAC58NwRAAABM0lEQVQokY1ToU4DQRB9c4GGIxAUJKSFhBA+oKIIagkOgcHUkhoEX1CF4QsQBIs5c5IEhWkFAkyDIYSklDQBVgANBxUdRJltZne58NTs7Hs7b3Z2Cb9gZhARIwySYMLdWVuM1fqul6m1J5guFJyMFkR/WFBgHjuNmFkl9jcrXkxEEB4JOadhqULAqHtLTO87mC8tofi8AgB4WnjAS/cRO6vLTg9pahOTBxSMhRNs+vtyiOh1ELQWAUByfa6Sb80Osra+ceGoCsYYxEd9zFVHnivHQxhjlNAbHAAMtm8BAO33T29P3dLp1Q2qs1OK0Pz4wt56WVWgpFHH7uEJCyGEpFG3cxDkDk64ViDPe2vjTLEuWjUwMxGRtaTQz7r+0TQ24glm4lKuL/8DlVuOJaeaBP/9oj/ocGz4RlLsKAAAAABJRU5ErkJggg==","evil":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAmUlEQVQ4y8VUQQrAIAzz4mFn2cX//9PhoBCztHbsMKEwZ5umsbWUv1bvfUxLO7d2jqPW2+Y3BvNeAliwMgs2PwmGDJAJ/zd/3ksmM9g7D1l5WVFY88Ekj6RKBxSZhXfLizTYCe4CcSnqDIGW0jzqqAtftZ2lxM702wK0u/6o67cNyeUwgNvZyjEzLiFtNRoe09T0o716Pr6sC8EWwVwVragpAAAAAElFTkSuQmCC","heal":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSIVQTuIiGSoTnZREcdahSJUCLVCqw4mL/2DJg1Jiouj4Fpw8Gex6uDirKuDqyAI/oA4OjkpukiJ9yWFFjE+uLyP89453HcfIDQqTLO64oCm22Y6mRCzuVUx9IowRt0akJllzElSCr7r6x4Bvt/FeJb/vT9Xn5q3GBAQiePMMG3iDeKZTdvgvE8cYSVZJT4nnjCpQeJHrisev3EuuizwzIiZSc8TR4jFYgcrHcxKpkY8TRxVNZ3yhazHKuctzlqlxlp98heG8/rKMtepRpDEIpYgQYSCGsqowEaMdp0UC2k6T/j4h12/RC6FXGUwciygCg2y6wf/g9+ztQpTk15SOAF0vzjOxxgQ2gWadcf5Pnac5gkQfAau9La/2gBmP0mvt7XoEdC/DVxctzVlD7jcAYaeDNmUXSlIJRQKwPsZfVMOGLwFete8ubXOcfoAZGhWqRvg4BAYL1L2us+7ezrn9u+d1vx+AJfrcrVxEgNzAAABQklEQVQ4jaWTO08CQRSFv11ekbVAiAWVMfHRWNiQ+A8srKgobS34ExZWWhoKO0psrOmMdhJCY0x4WGO1gGQFwuNazWR2FxX1NDOZuefMPWdm4A/4KD+Lmlv/ISdPD/x8r9WTEOMHkWiQ7LV64uxtaOVJpSmLVASAteMdC+BycqLFbDVRJDVOKk1RZHkbAzCrdWVW60pmMx4WALi6P/S1ukhFsPtzeg8NYmkHgKnrUcy3rafHchKMEEfVjvalWlWnar+5bCh0e1TtyKjakVjaYfY60HmoTKK5rHXROAqR3bNb0RZiaYep6/Fef2GxnQEgMRjrYtOzSVaj79RlV3l9txta85EVzm+2VnoHZm3UXDRb/SrUYK0d3AAYlupi9+c6VFNMoZhvW/DNXxiW6hLPrAOQKOz/+s8Aq2Wy1IJC8PqW4RPpkJiIfx2u6QAAAABJRU5ErkJggg==","dimension":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABzUlEQVRIx52WvUoDURCFt9jKwsLGQtOpVWwUJbEJkVQpXFCEgGBjIxgEG0FrC9HGWvEpbBUE30BLwcJCLGx8Acd7rjnr7M1sdjeEQ3L/zjczd7JJJCJRVcVxLFTR3tyF1/aj5Bk3NhOZW21I//KoEJRnnr5TNA5VBMpEbBlzDoePu9feEIL523O/EPRfjsMPsSC6PABQL09NublqZLLBeYAmpmaGAIRkTMP6w3iyNu0Fc52RDtIEwDwEWBkQQDEjrMN8drE+DAgv1s+5aDRQA1aWEy8NwTrNdQfaHeTMf+5ECMkDQNhDAMwpE5Be7F+5APGf9ReLJdEQjFme3BJlWtWZwpym3WYvlQXSGZhtGmbgN7gMYLjdOWCpvDBG+UIQ72BkBjri1PjkU+TiO6sBSGdUKgMsWMaImPLzXBuARj38qmVAcyODUg87bKwt1MUEqTvQxixLJcB8e03e3WtUF+meH4wjqDTgQe5l62zHK7zIUGMBYBy55b3bXT/GvGWOtqwEoBmMATj/OjUB7PfKACjZ73lTmEMwJ0Ab674vC6D8odbGehp9CNDGOFMKQLmfPi+aLHVaKYBzDhRBY/+rQFQug8hlkHmawjQvWku/hPbimpCRj4QAAAAASUVORK5CYII=","warrior":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABzSURBVDhP1ZC7DcAgDEQ9BDUzUWfYLMQQRFdYci7+JHR5DcL2PZBFfkvvffmXgjnncudRPFt7Ngwaxsk9QTiTpGElkiA0xpGHFZbYlyHheRcr4W9vSbhXSvTbmSSEF/ZJEi3stSRbWClBk2vAk9wnNrCSC//lkKwlnRf/AAAAAElFTkSuQmCC","ishtal":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABgSURBVDhPY2CgNdBVdvsPwujiBAFM49d3d8CYaIPQNaJjnAYR0oiOMQwhRTNRBqyKfwbGMP6HEwFgTD8DCGH6GYDuFdoZADMEl0HIGrFqRga4DCGoERkgu4YoW3EBQhoBFIrG+oyi95wAAAAASUVORK5CYII=","upzy8dc":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAB71JREFUeJztmttvI1cdxz8z47En4/E6WTtJ7TY4NEnLPvQFob3AgliEAFHxAFSlDyivqP9AtQ88IR64/AG8Lw9US1uJqwABZVfLwlZFgFjEtslW8WYTJ2mc+JYZj2c8hwfbEzuxEycZO62ar3Q0M+ec33XO+f3OOTNwho82pGEJSiQSQlVVLMuiWCx2lRuLxUS1WsVxHBkQw9BLHoYQAMMwKJfLlMtlZmZmfr+3Xdf1DU3TkCQJRVE+Niy9hjYC4vG4kGUZWZZxHIdSqdQh2zAMEYlEEEKwtbU1NL2GNgKKxaKk6zqu6yJJ++2TZRnP8wiHw8NSCRjYCNCfTU6/8AAgqb1FpVJBURQAstnsgZSZTIbWSCiVStRHvgzA5tJrnwHzbtCahoJmmJye7whepVKJeDyOaZp90auqim3bAGiaxo7P94W/Amwu3Qj0pfV0QCaTEQC2bROJRMhms30JFl4dSVb8Z1u5gmm+jSzL6LpO5OmP40QiPel3CkXi8TiWZVExFaRo/8bs1b9Wq/lTanl5+ZzneeW9/bo6IJPJiI2V7Cctl3+2ngEhSRJCdLzgLk4R3wW+73dQouR3TMxkArw6HGA8wPponHUgVq+j6p/taLNKq9UeZF1TZi6X8/XLZDLi0aNHMSFEpcOAycnJnvl2fX1dAgygDBBPfR01EgNgc+mGz6ObMvKFT/Rieyx4/3vQun0F+PFeecnpeQBcu0Ih90ar7RlgIZVKddjoeZ5/lTVNo1dpogxRktPzqJEYlbWb7AqUWwq0l54wEpcJh8PEYjFG9BGi0SjRaBRN09B1HU3TMBKXD3REJBL50V55LeMrazcJRQyS0/OEInMA7wKEw+GO0rJP1/X+0mBy+puEqn/ALfwSIQQj9Tcprb5Kcvrb/ZDvg+SYqHULr7aDV9shLKrIXu1YvGITz1Na/zMGtxFCYL3/OlFxi9HUlb7oO2KA67qsrKy0V/lv1NW+REgDu3CDirjIuXQUx27GFEkBUe9LoEA0+kqgNWNlHZCFC9LRk5ISUjg3+QXWt/6BbdvEUt/yM0dLZHvqNQyDRCLhP3eMAEmSUFXVL8D9VtvO+s8xuN0QWr1FdfMNPx70a7yPUARnxPhXjRA1Qjjnx38llLA/N4/EKjxKZe0m9eoCALr3F0qrr7Z3ud9uU9OuXfr2B0VRSKfT/nM2m30OEFvLtxh78htUUIAlML6KZsD2yh+PrDCApGrUDGM7YjccZz8999vQv//zNVz7yLzyy6+RmHoRaARmU/480QmbytZ7rS7PpdPpnrFJrlQqXRvalqt3vHqW/KPXgd2As/X4F9SdVYzEpe/RyAStciBCchhhFYmsrVzDtcC10O7d/YlUK6NJh8cB27ZfacmSJGlW1E02l37aoVsx9yeqpTs+zejoaE8b+11VqUA37XrRi25p0EhcxjP/S8grU/Mg2hyNOw6Em5PRMy5Tyf99H20zDfaU16UuChy6/Ow36jhN4VpbXa9FyYHosg8KAsfW7ahh91DG/l7AajwXcncYTV1la+QtoBFn6CNmnrcudlZMXwQQB+wFjvdCjkPUC+l0WrQ2MlLseb++tT+oPSUj1x5ArXDgFAg/9nCqJVTt3C6P8m/8+3w+H5jegZ4HTE1Nkc/nyefzHfWSrFDIvU34sUe9vvv6hWiUdoQfN1Jhu/GAz7dYLAap8vAOREZTnwJACj0BgB4Cp94oeuCb8v4xfNFqAk9NdKSUjvRSOPpi6CQYygiomY0p4fVx2uWeb0zv7dXbg1TJx1AcENYba293oilO7A/YkrcBgKc3HDCW/twwVBteDOiApO2rEvLEKSgyBAcIbzfqmxfkl80L8sv90tZdayA6tSPQdcClS5f8pPZw/dmONoGH81Ro35lhN8grZUKi8zBwZvId//7evXuB6R34wnTvqXDQCPpUOBBmgzT6oBEThDMGug4Yqb+JruvE43Hy+TwPHz7si25mZsY/tcnlclhcG5iOp5MFPkAY6AiwlGtYNuQ3WjWNEaCOpLv2d6xVAPLWBYob5xuVSrDH63sRiAOq5fVD+2ixSf8+PvnFrn3avjX0xTMIBOKAduOCQj88K/lDuxyKocWAZsS+3iy9cB24Xlj9dWo4Wg1/N/jD5vUHh7QPDYGOgM2lG/48br//oPFsx6kcRWwu/eyZ05DbDad0FuMsnI7c/ThbCAXBZHPpzonae9Ekp68Gxm8YEKFQSMzNzQlA6LouZmdnBSDGx8dXj8oslUp9BxCzs7NiampKAGJubk40v/MFtvkKbGs59uSLQpFNxrR32HauIOwHjEW3KLifPvauLTk9L0ZDd7FtG0u5xpj6N6xqnapyNbBt8Uc+BgTqgELud0AjX1vF+4f0Phpa+d+rH+sLWE8E6gDXdVlYaGQ40zRZXFw8Mc/FxUWWl5cBWFhYQIuunZhnOz50U+C9hWA/nAS+EIqNB3uev5efOObPVL0QqAPiT3yFarnQURc55p+eLdTMToMPO1E+KgJ1gKpNoGrBfuCIjQ922/ChiwFB48wBp63AaePMAUExUtT9X3yDgOe5A+HbQuDrgPYjK0kKk8i8dCJ+5Y1bONXd/5dbP0MGhYFOASFOvmhR2A5Ak94Iajvcz/78qLIGwXMfzoLgaStwhjOcLv4Pv3XdOoszVVYAAAAASUVORK5CYII="};
+function synIcon(sid){return SYN_ICONS[sid]||null;}
+const DECK_KEY='wwrpg_decks_v1';
+let DECK_LIST=[];
+let _dkEditIdx=-1;
+let _dkSelWeps=[];
+
+function initDecks(){
+  if(LOCKED){ DECK_LIST = (BAKED_DECKS||[]).slice(); return; }
+  try{ const r=localStorage.getItem(DECK_KEY); DECK_LIST = r!=null ? (JSON.parse(r)||[]) : (BAKED_DECKS||[]).map(d=>JSON.parse(JSON.stringify(d))); }catch(e){ DECK_LIST=[]; }
+}
+function saveDecks(){ if(LOCKED)return; try{ localStorage.setItem(DECK_KEY,JSON.stringify(DECK_LIST)); }catch(e){} }
+
+// breaks 배열 → 단계 숫자 배열
+function synBreakNums(syn){
+  return (syn.breaks||[]).map(b=>Array.isArray(b)?b[0]:(typeof b==='string'?parseInt(b):b)).filter(x=>!isNaN(x));
+}
+// 무기 항목 정규화: 문자열 or {name,lv} → {name,lv}
+function dkNorm(item){ return typeof item==="string"?{name:item,lv:null}:{name:item.name,lv:item.lv!=null?item.lv:null}; }
+function dkWepList(d){ return (d.weapons||[]).map(dkNorm); }
+// 강화 레벨(+1~+10) → 열린 tier 인덱스(0~3, 누적). 미지정(null)은 +10(전체)로 취급
+function lvToTier(lv){
+  if(lv==null) return 3;      // 미지정 = 최대(+10)
+  if(lv>=10) return 3;        // +10
+  if(lv>=8)  return 2;        // +8~9
+  if(lv>=5)  return 1;        // +5~7
+  return 0;                   // +1~4
+}
+// 강화 레벨 → 표시용 구간 라벨 ("+1~4" 등), 미지정이면 null
+function lvRange(lv){ return lv==null?null:TIER_RANGES[lvToTier(lv)]; }
+// 덱 무기들 → 시너지별 카운트/활성단계 (★강화단계까지의 시너지만 누적으로 켬)
+function calcDeckSyns(weapons){
+  const counts={};
+  (weapons||[]).map(dkNorm).forEach(it=>{
+    const w=WEAPONS.find(x=>x.name===it.name); if(!w)return;
+    const tmax=lvToTier(it.lv);   // 이 무기의 강화 단계까지만
+    (w.tiers||[]).forEach((sid,ti)=>{ if(!sid)return; if(ti>tmax)return; counts[sid]=(counts[sid]||0)+1; });
+  });
+  const res=[];
+  for(const sid in counts){
+    const syn=SYNERGIES[sid]; if(!syn)continue;
+    const nums=synBreakNums(syn);
+    const cnt=counts[sid];
+    let activeLv=0; nums.forEach(n=>{ if(cnt>=n)activeLv++; });
+    res.push({id:sid,name:syn.name||sid,color:syn.color||'#6b7280',count:cnt,nums,activeLv,maxLv:nums.length});
+  }
+  res.sort((a,b)=>(b.activeLv-a.activeLv)||(b.count-a.count)||a.name.localeCompare(b.name));
+  return res;
+}
+function deckScore(weapons){
+  let s=0; calcDeckSyns(weapons).forEach(x=>{ s+=x.activeLv*10+x.count; }); return s;
+}
+function dkThumb(wn){
+  const src=(typeof texSrc==="function")?texSrc(wn):null;
+  return src?`<img src="${src}" alt="${wn}">`:`<span class="q" title="${wn}">${wn.charAt(0)}</span>`;
+}
+// 시너지 아이콘 칩 (이미지 있으면 이미지, 없으면 첫글자)
+function synChip(s,cls){
+  const ic=synIcon(s.id);
+  const inner=ic?`<img src="${ic}" alt="${s.name}">`:`<span class="lt">${s.name.charAt(0)}</span>`;
+  return `<span class="dk-syi${cls||""}" style="${ic?"":"background:"+s.color}" title="${s.name} (${s.count})">${inner}<span class="cnt">${s.count}</span></span>`;
+}
+function synBadge(s){
+  const ic=synIcon(s.id);
+  return ic?`<span class="dk-syb img"><img src="${ic}" alt="${s.name}"></span>`:`<span class="dk-syb" style="background:${s.color}">${s.name.charAt(0)}</span>`;
+}
+
+function renderDeck(){
+  const ab=$("#dk-add-btn");
+  if(ab){ ab.style.display=LOCKED?"none":"inline-block";
+    if(!ab.dataset.w){ ab.addEventListener("click",()=>openDeckEditor(-1)); ab.dataset.w="1"; } }
+  const si=$("#dk-search");
+  if(si&&!si.dataset.w){ si.addEventListener("input",renderDeckList); si.dataset.w="1"; }
+  const sv=$("#dk-save"), cc=$("#dk-cancel"), mb=$("#dk-modal");
+  if(sv&&!sv.dataset.w){ sv.addEventListener("click",saveDeckFromEditor); sv.dataset.w="1"; }
+  if(cc&&!cc.dataset.w){ cc.addEventListener("click",closeDeckEditor); cc.dataset.w="1"; }
+  if(mb&&!mb.dataset.w){ mb.addEventListener("click",e=>{ if(e.target===mb)closeDeckEditor(); }); mb.dataset.w="1"; }
+  renderDeckList();
+}
+
+function renderDeckList(){
+  const q=($("#dk-search")&&$("#dk-search").value||"").trim().toLowerCase();
+  let list=(LOCKED?BAKED_DECKS:DECK_LIST)||[];
+  if(q) list=list.filter(d=>d.name.toLowerCase().includes(q)||dkWepList(d).some(w=>w.name.toLowerCase().includes(q)));
+  list=list.map((d,i)=>({d,i})).sort((a,b)=>((b.d.hot?1:0)-(a.d.hot?1:0))||(deckScore(b.d.weapons)-deckScore(a.d.weapons)));
+  const box=$("#dk-list"); if(!box)return;
+  if(!list.length){ box.innerHTML=`<div class="dk-empty">등록된 덱이 없어요.${LOCKED?"":" 오른쪽 위의 <b>+ 새 덱</b>으로 만들어 보세요."}</div>`; return; }
+  box.innerHTML=list.map(({d,i})=>{
+    const weps=dkWepList(d);
+    const syns=calcDeckSyns(d.weapons||[]);
+    const sc=deckScore(d.weapons||[]);
+    const synIcons=syns.map(s=>synChip(s, s.activeLv>0?" act":"")).join("");
+    const wepSlots=weps.map((it,wi)=>{
+      const rng=lvRange(it.lv), ti=lvToTier(it.lv);
+      const lvBadge=it.lv!=null
+        ? `<span class="dk-wlv" style="--lvc:${TIER_COLORS[ti]}">${rng}</span>`
+        : `<span class="dk-wlv none">+?</span>`;
+      return `<span class="dk-wcell"><span class="dk-ws">${dkThumb(it.name)}<span class="bn">${wi+1}</span></span>${lvBadge}</span>`;
+    }).join("");
+    const synRows=syns.map(s=>{
+      const brk=s.nums.map((n,ni)=>{
+        const reached=s.count>=n;
+        const isCur=reached && (ni===s.activeLv-1);
+        return `<span class="${isCur?"cur":(reached?"on":"")}">${n}</span>`;
+      }).join(" › ");
+      return `<div class="dk-syrow${s.activeLv>0?"":" inactive"}">${synBadge(s)}<div style="flex:1"><div class="dk-syn-nm">${s.name}</div><div class="dk-syn-brk">${brk||"-"}</div></div><span class="dk-syc">${s.count}</span></div>`;
+    }).join("") || `<div class="dk-empty" style="padding:12px">시너지 없음</div>`;
+    const buildSrc=(d.buildOrder&&d.buildOrder.length?d.buildOrder.map(dkNorm):weps);
+    const buildItems=buildSrc.map((it,bi)=>{ const r=lvRange(it.lv); return `<span class="dk-bitem"><span class="n">${bi+1}</span>${dkThumb(it.name)}<span>${it.name}${r?` <b style="color:var(--gold)">${r}</b>`:""}</span></span>`; }).join("");
+    const actions=LOCKED?"":`<div class="dk-cactions"><button class="edit" data-edit="${i}">✎ 수정</button><button class="del" data-del="${i}">✕ 삭제</button></div>`;
+    return `<div class="dk-card${d.hot?" hot":""}">
+      <div class="dk-cardmain" data-toggle="${i}">
+        <div class="dk-cname">${d.name}${d.hot?'<span class="hot-t">🔥 HOT</span>':""}</div>
+        <div class="dk-csyns">${synIcons}</div>
+        <div class="dk-cweps">${wepSlots}</div>
+        <div class="dk-score">${sc}<small>점수</small></div>
+      </div>
+      <div class="dk-detail" id="dk-det-${i}">
+        ${d.desc?`<div style="font-size:12px;color:var(--dim);margin-bottom:10px">${d.desc}</div>`:""}
+        <div class="dk-dcols">
+          <div><div class="dk-dtitle">활성 시너지</div>${synRows}</div>
+          <div><div class="dk-dtitle">덱 빌드 순서</div><div class="dk-bnum">${buildItems}</div></div>
+        </div>
+        ${actions}
+      </div>
+    </div>`;
+  }).join("");
+  box.querySelectorAll("[data-toggle]").forEach(el=>el.addEventListener("click",()=>{
+    const det=box.querySelector("#dk-det-"+el.dataset.toggle); if(det)det.classList.toggle("open");
+  }));
+  if(!LOCKED){
+    box.querySelectorAll("[data-edit]").forEach(el=>el.addEventListener("click",e=>{ e.stopPropagation(); openDeckEditor(+el.dataset.edit); }));
+    box.querySelectorAll("[data-del]").forEach(el=>el.addEventListener("click",e=>{ e.stopPropagation();
+      if(confirm("이 덱을 삭제할까요?")){ DECK_LIST.splice(+el.dataset.del,1); saveDecks(); renderDeckList(); render(); } }));
+  }
+}
+
+function openDeckEditor(idx){
+  _dkEditIdx=idx;
+  const m=$("#dk-modal"); if(!m)return;
+  const d=idx>=0?DECK_LIST[idx]:{name:"",weapons:[],hot:false,desc:""};
+  $("#dk-modal-title").textContent=idx>=0?"덱 수정":"새 덱 만들기";
+  $("#dk-name").value=d.name||"";
+  $("#dk-hot").checked=!!d.hot;
+  $("#dk-desc").value=d.desc||"";
+  _dkSelWeps=dkWepList(d);   // [{name,lv}]
+  renderDeckPicker(); renderDeckSel();
+  m.style.display="flex";
+}
+function closeDeckEditor(){ const m=$("#dk-modal"); if(m)m.style.display="none"; }
+
+function renderDeckPicker(){
+  const box=$("#dk-pick"); if(!box)return;
+  box.innerHTML=WEAPONS.map(w=>{
+    const si=_dkSelWeps.findIndex(x=>x.name===w.name);
+    const src=(typeof texSrc==="function")?texSrc(w.name):null;
+    return `<div class="dk-pi${si>=0?" sel":""}" data-wn="${w.name}" title="${w.name}">${src?`<img src="${src}">`:`<span class="tx">${w.name.slice(0,4)}</span>`}${si>=0?`<span class="nm">${si+1}</span>`:""}</div>`;
+  }).join("");
+  box.querySelectorAll(".dk-pi").forEach(el=>el.addEventListener("click",()=>{
+    const wn=el.dataset.wn; const idx=_dkSelWeps.findIndex(x=>x.name===wn);
+    if(idx>=0)_dkSelWeps.splice(idx,1);
+    else if(_dkSelWeps.length<9)_dkSelWeps.push({name:wn,lv:null});
+    renderDeckPicker(); renderDeckSel();
+  }));
+}
+function renderDeckSel(){
+  const box=$("#dk-sel"); if(!box)return;
+  if(!_dkSelWeps.length){ box.innerHTML=`<span class="ph">아래에서 무기를 클릭해 추가하세요 (0/9). 추가 후 강화단계를 지정할 수 있어요.</span>`; return; }
+  box.innerHTML=`<div class="dk-sel-head">${_dkSelWeps.length}/9 · 각 무기의 강화단계를 골라보세요</div>`+
+    _dkSelWeps.map((it,i)=>{
+      const opts=`<option value="">강화 -</option>`+[1,2,3,4,5,6,7,8,9,10].map(L=>`<option value="${L}"${it.lv===L?" selected":""}>+${L}</option>`).join("");
+      return `<div class="dk-selitem"><span class="dk-ws" title="${it.name}">${dkThumb(it.name)}<span class="bn">${i+1}</span></span><div class="dk-selinfo"><div class="dk-selnm">${it.name}</div><select class="dk-lvsel" data-li="${i}">${opts}</select></div><button class="dk-selrm" data-rm="${i}">✕</button></div>`;
+    }).join("");
+  box.querySelectorAll(".dk-lvsel").forEach(sl=>sl.addEventListener("change",()=>{
+    const i=+sl.dataset.li; _dkSelWeps[i].lv=sl.value?+sl.value:null; renderDeckSynPreview();
+  }));
+  box.querySelectorAll(".dk-selrm").forEach(b=>b.addEventListener("click",()=>{
+    _dkSelWeps.splice(+b.dataset.rm,1); renderDeckPicker(); renderDeckSel();
+  }));
+  renderDeckSynPreview();
+}
+function renderDeckSynPreview(){
+  const box=$("#dk-synprev"); if(!box)return;
+  if(!_dkSelWeps.length){ box.innerHTML=`<span class="ph">무기를 추가하면 활성 시너지가 여기에 표시돼요</span>`; return; }
+  const syns=calcDeckSyns(_dkSelWeps);
+  if(!syns.length){ box.innerHTML=`<span class="ph">활성 시너지 없음</span>`; return; }
+  box.innerHTML=syns.map(s=>{
+    const ic=synIcon(s.id);
+    const icHtml=ic?`<img src="${ic}" alt="${s.name}">`:`<span class="lt" style="background:${s.color}">${s.name.charAt(0)}</span>`;
+    const stage=s.activeLv>0?`<span class="stage">${s.activeLv}단계</span>`:"";
+    return `<span class="dk-spv${s.activeLv>0?" act":" inactive"}" title="${s.name} ${s.count}개"><span class="ic">${icHtml}</span><span class="nm">${s.name}</span><span class="cn">${s.count}</span>${stage}</span>`;
+  }).join("");
+}
+function saveDeckFromEditor(){
+  const name=($("#dk-name").value||"").trim();
+  if(!name){ alert("덱 이름을 입력해주세요."); return; }
+  if(!_dkSelWeps.length){ alert("무기를 최소 1개 이상 선택해주세요."); return; }
+  const weps=_dkSelWeps.map(x=>({name:x.name,lv:x.lv!=null?x.lv:null}));
+  const d={ name, weapons:weps, buildOrder:weps.slice(), hot:$("#dk-hot").checked, desc:($("#dk-desc").value||"").trim() };
+  if(_dkEditIdx>=0)DECK_LIST[_dkEditIdx]=d; else DECK_LIST.push(d);
+  saveDecks(); closeDeckEditor(); renderDeckList(); render();
+}
+
+
+
 function bakeDistribution(){
   const mergedTex=Object.assign({}, BAKED_TEX, TEX_OVER);   // 구워진 것 + 내 로컬 편집
   const texN=Object.keys(mergedTex).filter(k=>mergedTex[k]).length;
@@ -1903,6 +2243,7 @@ function bakeDistribution(){
     .replace(/let BAKED_ADD_WEAPONS = [\s\S]*?\/\*ADDW_END\*\//, "let BAKED_ADD_WEAPONS = "+JSON.stringify(WEP_ADD)+"; /*ADDW_END*/")
     .replace(/let BAKED_ADD_SYN = [\s\S]*?\/\*ADDS_END\*\//, "let BAKED_ADD_SYN = "+JSON.stringify(SYN_ADD)+"; /*ADDS_END*/")
     .replace(/let BAKED_DEL_WEP = [\s\S]*?\/\*DELW_END\*\//, "let BAKED_DEL_WEP = "+JSON.stringify(DEL_WEP)+"; /*DELW_END*/")
+    .replace(/let BAKED_DECKS = [\s\S]*?\/\*DECKS_END\*\//, "let BAKED_DECKS = "+JSON.stringify(DECK_LIST)+"; /*DECKS_END*/")
     .replace(/let BAKED_DEL_SYN = [\s\S]*?\/\*DELS_END\*\//, "let BAKED_DEL_SYN = "+JSON.stringify(DEL_SYN)+"; /*DELS_END*/")
     .replace(/const LOCKED = (?:true|false);/, "const LOCKED = true;");
   const blob=new Blob([out],{type:"text/html;charset=utf-8"});
@@ -2130,5 +2471,6 @@ if(!LOCKED){
 }
 
 fillTargetSelects();
+initDecks();
 render();
 </script></body></html>
