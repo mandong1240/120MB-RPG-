@@ -1,0 +1,1582 @@
+
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>약탈 · 야생 능력자 — 능력 도감 & 밸런스 건의소</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/quiple/galmuri/dist/galmuri.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ══════════════════════════════════════════════════════════
+   야생 능력자 · 능력 도감
+   팔레트 : 심연(void) 베이스 + 랭크별 오라 액센트
+   ══════════════════════════════════════════════════════════ */
+:root{
+  --void:#080a11; --void2:#0c0f18;
+  --panel:#131826; --panel2:#181e2e; --panel3:#1e2537;
+  --line:#252d42; --line2:#323c56;
+  --text:#e9edf7; --dim:#97a1ba; --faint:#5e6880;
+  --gold:#ffcf5c; --violet:#8b6bff; --cyan:#3fd8ff; --rose:#ff5f9e;
+
+  /* 인게임 § 색과 1:1 대응하는 랭크 색 */
+  --r-D:#9aa4b4;  --r-C:#ffffff;  --r-B:#3fd97a;  --r-A:#ff5a5a;
+  --r-S:#ffe15c;  --r-SS:#ff6fe3;  --r-SSP:#dfe6f2; --r-L:#4fdcff;
+  --r-X:#ff2f2f;  --r-EV:#ffb03a;
+
+  --f-disp:"Galmuri14","Galmuri11","Pretendard",sans-serif;
+  --f-body:"Pretendard","Galmuri11",-apple-system,sans-serif;
+  --f-px:"Galmuri11","Pretendard",sans-serif;
+  --f-mono:"GalmuriMono","Galmuri11",ui-monospace,"SFMono-Regular",monospace;
+
+  --sh1:0 2px 10px rgba(0,0,0,.4);
+  --sh2:0 12px 40px rgba(0,0,0,.55);
+  --rad:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void); color:var(--text);
+  font-family:var(--f-body); font-size:14.5px; line-height:1.72;
+  min-height:100vh; overflow-x:hidden;
+}
+/* 배경 오로라 + 격자 */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(950px 520px at 10% -12%, rgba(139,107,255,.22), transparent 62%),
+    radial-gradient(760px 430px at 92% -4%,  rgba(63,216,255,.15),  transparent 62%),
+    radial-gradient(700px 600px at 50% 112%, rgba(255,95,158,.11),  transparent 62%);
+}
+body::after{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(circle at 50% 20%,#000 0,transparent 78%);
+}
+#app{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+::selection{background:var(--violet);color:#fff}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--void2)}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:6px;border:2px solid var(--void2)}
+::-webkit-scrollbar-thumb:hover{background:#46527a}
+a{color:var(--cyan);text-decoration:none}
+
+/* ── 공통 요소 ─────────────────────────────────────── */
+.panel{background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+  border:1px solid var(--line); border-radius:var(--rad); box-shadow:var(--sh1)}
+.btn{font-family:var(--f-body);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
+  background:var(--panel3);border:1px solid var(--line2);border-radius:10px;padding:9px 15px;
+  transition:.16s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn:hover{background:#28304a;border-color:#48557d;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.pri{background:linear-gradient(135deg,var(--violet),#6b4ede);border-color:#7d63ff;color:#fff;
+  box-shadow:0 4px 16px rgba(139,107,255,.32)}
+.btn.pri:hover{filter:brightness(1.12)}
+.btn.gold{background:linear-gradient(135deg,#ffcf5c,#e0a520);border-color:#ffd97a;color:#1a1405}
+.btn.ghost{background:transparent}
+.btn.danger{color:#ff8b8b;border-color:#5a2b32}
+.btn.danger:hover{background:#3a1c22}
+.btn.sm{font-size:12px;padding:6px 11px;border-radius:8px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+input,select,textarea{font-family:var(--f-body);font-size:13.5px;color:var(--text);
+  background:var(--void2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
+  outline:none;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,107,255,.16)}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+textarea{resize:vertical;min-height:84px;line-height:1.65}
+select{cursor:pointer}
+label{font-size:12.5px;color:var(--dim);font-weight:600;display:block;margin-bottom:6px}
+.hint{font-size:11.5px;color:var(--faint);font-weight:400;margin-left:6px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ── 상단바 ────────────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(8,10,17,.82);
+  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1280px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.logo .orb{width:38px;height:38px;border-radius:11px;flex-shrink:0;position:relative;
+  background:conic-gradient(from 210deg,#8b6bff,#3fd8ff,#ff5f9e,#ffcf5c,#8b6bff);
+  box-shadow:0 0 22px rgba(139,107,255,.45)}
+.logo .orb::after{content:"";position:absolute;inset:3px;border-radius:8px;background:var(--void);
+  background-image:radial-gradient(circle at 50% 40%,rgba(139,107,255,.5),transparent 70%)}
+.logo .orb b{position:absolute;inset:0;display:grid;place-items:center;font-size:17px;z-index:2}
+.logo-t b{display:block;font-family:var(--f-disp);font-size:14px;letter-spacing:.01em;line-height:1.3}
+.logo-t span{display:block;font-family:var(--f-px);font-size:10px;color:var(--gold);letter-spacing:.08em}
+.gsearch{position:relative;margin-left:auto;flex:1;min-width:170px;max-width:290px}
+.gsearch input{padding-left:34px;font-size:12.5px;border-radius:999px}
+.gsearch .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:13px}
+.gsearch kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);
+  font-size:10px;color:var(--faint);border:1px solid var(--line2);border-radius:5px;padding:1px 5px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{font-family:var(--f-body);font-size:12.5px;font-weight:600;color:var(--dim);cursor:pointer;
+  background:transparent;border:1px solid transparent;border-radius:999px;padding:8px 14px;transition:.15s}
+.tab:hover{background:var(--panel2);color:var(--text)}
+.tab.active{background:linear-gradient(135deg,rgba(139,107,255,.24),rgba(63,216,255,.16));
+  border-color:rgba(139,107,255,.5);color:#fff;box-shadow:0 0 18px rgba(139,107,255,.2)}
+
+/* ── 히어로 ────────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-in{max-width:1280px;margin:0 auto;padding:44px 22px 36px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-px);font-size:10.5px;
+  letter-spacing:.14em;color:var(--gold);background:rgba(255,207,92,.09);
+  border:1px solid rgba(255,207,92,.24);border-radius:999px;padding:5px 13px;margin-bottom:16px}
+.hero h1{font-family:var(--f-disp);font-size:clamp(24px,4.6vw,42px);line-height:1.32;letter-spacing:.005em}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,#a98bff,#3fd8ff 45%,#ff7fb8);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{margin-top:14px;max-width:660px;color:var(--dim);font-size:14px}
+.hstats{display:flex;gap:11px;margin-top:24px;flex-wrap:wrap}
+.hstat{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:12px;
+  padding:11px 17px;min-width:104px;backdrop-filter:blur(6px)}
+.hstat b{display:block;font-family:var(--f-mono);font-size:23px;line-height:1.15;
+  background:linear-gradient(180deg,#fff,#9fb0d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hstat span{font-family:var(--f-px);font-size:10px;color:var(--faint);letter-spacing:.05em}
+
+/* ── 레이아웃 ──────────────────────────────────────── */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 22px 90px}
+.view{display:none;animation:fadeUp .32s ease both}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin-bottom:34px}
+.sec-h{font-family:var(--f-disp);font-size:17px;display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.sec-h .n{font-family:var(--f-mono);font-size:11px;color:var(--void);background:var(--gold);
+  border-radius:6px;padding:2px 7px;font-weight:700}
+.sec-sub{font-size:12.5px;color:var(--faint);margin-bottom:18px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent);margin:34px 0 26px}
+
+/* ── 랭크 배지 ─────────────────────────────────────── */
+.rk{display:inline-flex;align-items:center;justify-content:center;font-family:var(--f-px);
+  font-size:11px;font-weight:700;letter-spacing:.03em;border-radius:7px;padding:3px 9px;
+  border:1px solid currentColor;background:color-mix(in srgb,currentColor 13%,transparent);
+  white-space:nowrap;line-height:1.5}
+.rk-D{color:var(--r-D)} .rk-C{color:var(--r-C)} .rk-B{color:var(--r-B)} .rk-A{color:var(--r-A)}
+.rk-S{color:var(--r-S)} .rk-SS{color:var(--r-SS)} .rk-SSP{color:var(--r-SSP)} .rk-L{color:var(--r-L)}
+.rk-X{color:var(--r-X);animation:xpulse 1.9s ease-in-out infinite}
+.rk-EV{color:var(--r-EV)}
+.rk-NA{color:var(--faint)}
+@keyframes xpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,47,47,.42)}50%{box-shadow:0 0 0 6px rgba(255,47,47,0)}}
+.rk-SSP{background:linear-gradient(135deg,rgba(223,230,242,.2),rgba(150,165,200,.08))}
+.rk-EV{background:linear-gradient(90deg,rgba(255,90,90,.18),rgba(255,207,92,.18),rgba(63,216,255,.18))}
+
+/* ── 랭크 사다리 ───────────────────────────────────── */
+.ladder{display:flex;gap:9px;flex-wrap:wrap}
+.lad{flex:1 1 96px;min-width:96px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:13px 12px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.lad::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor}
+.lad:hover{transform:translateY(-3px);border-color:currentColor;box-shadow:0 8px 26px rgba(0,0,0,.45)}
+.lad.on{border-color:currentColor;background:color-mix(in srgb,currentColor 9%,var(--panel))}
+.lad .lr{font-family:var(--f-disp);font-size:15px;color:currentColor;line-height:1.3}
+.lad .lc{font-family:var(--f-mono);font-size:19px;color:var(--text);line-height:1.25}
+.lad .ll{font-family:var(--f-px);font-size:9.5px;color:var(--faint)}
+
+/* ── 필터 바 ───────────────────────────────────────── */
+.filters{position:sticky;top:63px;z-index:40;background:rgba(12,15,24,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:20px;box-shadow:var(--sh1)}
+.frow{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.frow+.frow{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.flabel{font-family:var(--f-px);font-size:10px;color:var(--faint);letter-spacing:.08em;
+  min-width:52px;flex-shrink:0}
+.chip{font-size:11.5px;font-weight:600;color:var(--dim);cursor:pointer;background:var(--panel2);
+  border:1px solid var(--line);border-radius:999px;padding:5px 11px;transition:.14s;white-space:nowrap}
+.chip:hover{background:var(--panel3);color:var(--text)}
+.chip.on{background:rgba(139,107,255,.2);border-color:var(--violet);color:#fff}
+.chip .cnt{font-family:var(--f-mono);font-size:10px;opacity:.6;margin-left:4px}
+.fsearch{flex:1;min-width:180px}
+.fsearch input{font-size:12.5px;padding:7px 12px}
+.fsel{width:auto;min-width:132px;font-size:12.5px;padding:7px 10px}
+.fmeta{margin-left:auto;font-family:var(--f-mono);font-size:11.5px;color:var(--faint)}
+.fmeta b{color:var(--gold)}
+
+/* ── 능력 카드 ─────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:13px}
+.card{position:relative;background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);border-radius:13px;padding:15px 16px 13px;cursor:pointer;
+  transition:transform .16s,border-color .16s,box-shadow .16s;overflow:hidden;display:flex;flex-direction:column;gap:9px}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:.85}
+.card::after{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,currentColor,transparent 70%);opacity:.07;pointer-events:none;transition:.25s}
+.card:hover{transform:translateY(-4px);border-color:currentColor;box-shadow:0 14px 36px rgba(0,0,0,.5)}
+.card:hover::after{opacity:.16;transform:scale(1.2)}
+.card .chead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .cname{font-family:var(--f-disp);font-size:14.5px;color:var(--text);line-height:1.4;flex:1;min-width:0}
+.card .cdesc{font-size:12.5px;color:var(--dim);line-height:1.62;
+  display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .cfoot{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.cd{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:11px;
+  color:var(--cyan);background:rgba(63,216,255,.09);border:1px solid rgba(63,216,255,.24);
+  border-radius:7px;padding:2px 8px}
+.cd.psv{color:#9fe89a;background:rgba(159,232,154,.09);border-color:rgba(159,232,154,.24)}
+.cd.non{color:var(--gold);background:rgba(255,207,92,.09);border-color:rgba(255,207,92,.24)}
+.cd.unk{color:var(--faint);background:rgba(255,255,255,.04);border-color:var(--line2)}
+.tg{font-size:10.5px;color:var(--faint);background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:6px;padding:1.5px 7px;white-space:nowrap}
+.card .awk{position:absolute;right:11px;top:11px;font-size:11px;filter:drop-shadow(0 0 5px rgba(63,216,255,.8))}
+.empty{text-align:center;padding:60px 20px;color:var(--faint)}
+.empty .big{font-size:38px;margin-bottom:10px;opacity:.5}
+
+/* ── 인게임 툴팁 렌더 ──────────────────────────────── */
+.mctip{font-family:var(--f-px);font-size:13px;line-height:1.85;white-space:pre-wrap;word-break:break-word;
+  background:#0d0517;border:2px solid #2b0f52;border-radius:6px;padding:14px 16px;
+  box-shadow:inset 0 0 0 1px #150627, 0 8px 26px rgba(0,0,0,.6);color:#fff}
+.mctip .b{font-weight:700}.mctip .i{font-style:italic}
+.mctip .ob{opacity:.85;letter-spacing:.05em}
+
+/* ── 모달 ──────────────────────────────────────────── */
+.mask{position:fixed;inset:0;z-index:90;background:rgba(4,6,11,.76);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  display:none;align-items:flex-start;justify-content:center;padding:40px 18px;overflow-y:auto}
+.mask.on{display:flex;animation:fadeUp .2s ease both}
+.modal{width:100%;max-width:660px;background:linear-gradient(180deg,var(--panel),var(--void2));
+  border:1px solid var(--line2);border-radius:18px;box-shadow:var(--sh2);overflow:hidden}
+.modal.wide{max-width:840px}
+.mhead{padding:20px 22px 16px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.mhead::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 120px at 12% 0%,currentColor,transparent 70%);opacity:.14}
+.mhead .mt{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mhead h3{font-family:var(--f-disp);font-size:19px;line-height:1.4}
+.mhead .mid{position:relative;font-family:var(--f-mono);font-size:11px;color:var(--faint);margin-top:6px}
+.mbody{padding:20px 22px}
+.mfoot{padding:14px 22px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.xbtn{position:absolute;right:14px;top:14px;z-index:3;width:32px;height:32px;border-radius:9px;
+  background:var(--panel3);border:1px solid var(--line2);color:var(--dim);cursor:pointer;font-size:15px;line-height:1}
+.xbtn:hover{background:#31394f;color:#fff}
+.kv{display:grid;grid-template-columns:88px 1fr;gap:7px 14px;font-size:13px;margin-bottom:16px}
+.kv dt{color:var(--faint);font-size:12px}
+.kv dd{color:var(--text)}
+
+/* ── 표 ────────────────────────────────────────────── */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{font-family:var(--f-px);font-size:11px;letter-spacing:.06em;color:var(--faint);text-align:left;
+  padding:11px 14px;border-bottom:1px solid var(--line2);background:rgba(255,255,255,.02);white-space:nowrap}
+.tbl td{padding:13px 14px;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr{transition:background .14s}
+.tbl tbody tr:hover{background:rgba(139,107,255,.06)}
+.tbl .num{font-family:var(--f-mono);text-align:right;white-space:nowrap}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+
+/* ── 후원 ──────────────────────────────────────────── */
+.dn-row.hot{background:linear-gradient(90deg,rgba(255,207,92,.09),transparent)}
+.dn-row.top{background:linear-gradient(90deg,rgba(255,95,158,.10),transparent)}
+.mult{font-family:var(--f-mono);font-size:16px;font-weight:700;
+  background:linear-gradient(180deg,#fff,#a9b8dc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dn-note{font-size:11.5px;color:var(--gold);background:rgba(255,207,92,.1);
+  border:1px solid rgba(255,207,92,.26);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.calc{padding:20px 22px}
+.calc-in{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.calc-in input{flex:1;min-width:190px;font-family:var(--f-mono);font-size:16px}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.calc-out{background:var(--void2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-align:center}
+.calc-out .big{font-family:var(--f-mono);font-size:clamp(26px,5vw,38px);line-height:1.25;
+  background:linear-gradient(100deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;color:transparent}
+.calc-out .sub{font-size:12.5px;color:var(--dim);margin-top:5px}
+.calc-out.empty2 .big{background:none;color:var(--faint);font-size:15px}
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.bar{display:grid;grid-template-columns:88px 1fr 74px;gap:11px;align-items:center;font-size:12px}
+.bar .bl{font-family:var(--f-mono);color:var(--dim);text-align:right;font-size:11.5px}
+.bar .bt{display:block;height:11px;background:var(--void2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.bar .bf{display:block;height:100%;min-width:3px;border-radius:999px;
+  background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width .6s cubic-bezier(.2,.9,.3,1)}
+.bar .bv{font-family:var(--f-mono);font-size:11.5px;color:var(--gold)}
+
+/* ── 건의 폼 ───────────────────────────────────────── */
+.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:13px;position:relative}
+.step.done{border-color:rgba(63,217,122,.34)}
+.step-h{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.step-h .sn{width:25px;height:25px;flex-shrink:0;border-radius:8px;display:grid;place-items:center;
+  font-family:var(--f-mono);font-size:12px;font-weight:700;background:var(--panel3);color:var(--dim);border:1px solid var(--line2)}
+.step.done .sn{background:rgba(63,217,122,.16);color:#5ee68f;border-color:rgba(63,217,122,.4)}
+.step-h h4{font-family:var(--f-disp);font-size:14px;flex:1}
+.step-h .req{font-size:10.5px;color:var(--rose);font-family:var(--f-px)}
+.step-h .opt{font-size:10.5px;color:var(--faint);font-family:var(--f-px)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:start}
+.ba .arw{align-self:center;font-size:19px;color:var(--violet);padding-top:20px}
+.ba .now label{color:#ff9f9f}.ba .aft label{color:#7ee6a5}
+.ba .aft textarea{border-color:rgba(63,217,122,.24)}
+.sevbar{display:flex;gap:6px}
+.sev{flex:1;padding:9px 4px;text-align:center;font-size:11.5px;font-weight:600;cursor:pointer;
+  background:var(--void2);border:1px solid var(--line);border-radius:9px;color:var(--faint);transition:.14s}
+.sev:hover{border-color:var(--line2);color:var(--text)}
+.sev.on{color:#fff;border-color:currentColor}
+.sev[data-v="1"].on{background:rgba(120,200,255,.2);border-color:#5ab0ff}
+.sev[data-v="2"].on{background:rgba(63,217,122,.2);border-color:#3fd97a}
+.sev[data-v="3"].on{background:rgba(255,207,92,.2);border-color:#ffcf5c}
+.sev[data-v="4"].on{background:rgba(255,140,60,.2);border-color:#ff8c3c}
+.sev[data-v="5"].on{background:rgba(255,60,60,.22);border-color:#ff3c3c}
+.picked{display:flex;align-items:center;gap:11px;background:var(--void2);border:1px solid var(--line2);
+  border-radius:12px;padding:12px 14px}
+.picked .pn{font-family:var(--f-disp);font-size:14px;flex:1}
+.picked.none{color:var(--faint);font-size:12.5px;justify-content:center;border-style:dashed}
+.acbox{position:relative}
+.aclist{position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:30;max-height:270px;overflow-y:auto;
+  background:var(--panel2);border:1px solid var(--line2);border-radius:12px;box-shadow:var(--sh2);display:none}
+.aclist.on{display:block}
+.acitem{padding:9px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:13px;border-bottom:1px solid var(--line)}
+.acitem:last-child{border-bottom:0}
+.acitem:hover,.acitem.cur{background:rgba(139,107,255,.16)}
+.acitem .an{flex:1}
+.acitem .ac2{font-family:var(--f-mono);font-size:10.5px;color:var(--faint)}
+
+/* 완성도 링 */
+.scorebox{display:flex;align-items:center;gap:16px;padding:16px 18px}
+.ring{position:relative;width:78px;height:78px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .rv{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:17px;font-weight:700}
+.scorebox .sinfo{flex:1;min-width:0}
+.scorebox .sinfo b{font-family:var(--f-disp);font-size:14px;display:block}
+.scorebox .sinfo p{font-size:12px;color:var(--faint);margin-top:3px}
+.missing{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.missing i{font-style:normal;font-size:10.5px;color:#ffb0b0;background:rgba(255,90,90,.1);
+  border:1px solid rgba(255,90,90,.24);border-radius:6px;padding:1.5px 7px}
+
+/* 출력 */
+.outbox{background:#0a0d15;border:1px solid var(--line);border-radius:12px;padding:15px 17px;
+  font-family:var(--f-mono);font-size:12.5px;line-height:1.78;white-space:pre-wrap;word-break:break-word;
+  max-height:420px;overflow-y:auto;color:#cfd8ec}
+.segbtns{display:inline-flex;background:var(--void2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.segbtns button{font-size:11.5px;font-weight:600;color:var(--faint);background:transparent;border:0;
+  border-radius:7px;padding:6px 12px;cursor:pointer;transition:.14s}
+.segbtns button.on{background:var(--panel3);color:#fff}
+
+/* 보관함 */
+.rep{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 16px;
+  display:flex;gap:13px;align-items:flex-start;transition:.15s}
+.rep:hover{border-color:var(--line2)}
+.rep .rmain{flex:1;min-width:0}
+.rep .rt{font-family:var(--f-disp);font-size:13.5px;margin-bottom:3px}
+.rep .rm{font-size:11.5px;color:var(--faint);font-family:var(--f-mono)}
+.rep .rx{font-size:12px;color:var(--dim);margin-top:6px;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.st{font-size:10.5px;font-weight:700;border-radius:999px;padding:2.5px 9px;white-space:nowrap;border:1px solid currentColor;
+  background:color-mix(in srgb,currentColor 13%,transparent)}
+.st.draft{color:#9aa4b4}.st.sent{color:#3fd8ff}.st.review{color:#ffcf5c}
+.st.done{color:#3fd97a}.st.hold{color:#ff8c3c}.st.rej{color:#ff5a5a}
+.kind{font-size:10.5px;font-weight:700;border-radius:6px;padding:1.5px 8px;border:1px solid currentColor;
+  background:color-mix(in srgb,currentColor 13%,transparent)}
+.kind.up{color:#3fd97a}.kind.down{color:#ff5a5a}.kind.remake{color:#8b6bff}
+.kind.bug{color:#ffcf5c}.kind.new{color:#3fd8ff}.kind.etc{color:#9aa4b4}
+
+/* 가이드 카드 */
+.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px}
+.gc{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 18px}
+.gc .gi{font-size:21px;margin-bottom:9px;display:block}
+.gc h5{font-family:var(--f-disp);font-size:13.5px;margin-bottom:7px}
+.gc p{font-size:12.5px;color:var(--dim);line-height:1.7}
+.gc ul{margin:7px 0 0 16px;font-size:12.5px;color:var(--dim);line-height:1.75}
+.gc.good{border-color:rgba(63,217,122,.3)}
+.gc.bad{border-color:rgba(255,90,90,.28)}
+.gc.good h5{color:#5ee68f}.gc.bad h5{color:#ff8b8b}
+.pipeline{display:flex;gap:0;flex-wrap:wrap;align-items:stretch}
+.pl{flex:1;min-width:130px;background:var(--panel);border:1px solid var(--line);padding:14px 15px;position:relative}
+.pl:first-child{border-radius:12px 0 0 12px}.pl:last-child{border-radius:0 12px 12px 0}
+.pl+.pl{border-left:0}
+.pl .pn2{font-family:var(--f-mono);font-size:10.5px;color:var(--violet);letter-spacing:.08em}
+.pl b{display:block;font-family:var(--f-disp);font-size:13px;margin:4px 0 5px}
+.pl p{font-size:11.5px;color:var(--faint);line-height:1.62}
+@media(max-width:720px){.pl{border-radius:12px!important;border-left:1px solid var(--line)!important;margin-bottom:8px}}
+
+/* 토스트 */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);z-index:200;
+  background:var(--panel3);border:1px solid var(--line2);border-radius:11px;padding:11px 20px;
+  font-size:13px;box-shadow:var(--sh2);opacity:0;pointer-events:none;transition:.24s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.notice{display:flex;gap:11px;align-items:flex-start;background:rgba(63,216,255,.06);
+  border:1px solid rgba(63,216,255,.22);border-radius:12px;padding:13px 16px;font-size:12.5px;color:var(--dim)}
+.notice.warn{background:rgba(255,207,92,.06);border-color:rgba(255,207,92,.24)}
+.notice b{color:var(--text)}
+.notice .ni{font-size:15px;line-height:1.4}
+
+@media(max-width:860px){
+  .f2,.f3{grid-template-columns:1fr}
+  .ba{grid-template-columns:1fr}.ba .arw{transform:rotate(90deg);padding:0;justify-self:center}
+  .filters{position:static}
+  .kv{grid-template-columns:74px 1fr}
+}
+@media(max-width:560px){
+  .topbar-in{padding:9px 14px;gap:10px}
+  .gsearch{order:3;max-width:none;margin-left:0;width:100%}
+  .wrap,.hero-in{padding-left:14px;padding-right:14px}
+  .grid{grid-template-columns:1fr}
+}
+@media print{
+  body::before,body::after,.topbar,.filters,.tabs,.mask{display:none!important}
+  body{background:#fff;color:#000}
+  .view{display:block!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══════════ 상단바 ══════════ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="logo">
+      <div class="orb"><b>⚡</b></div>
+      <div class="logo-t"><b>야생 능력자</b><span>ABILITY CODEX</span></div>
+    </div>
+    <div class="gsearch">
+      <span class="mag">🔍</span>
+      <input id="gs" type="search" placeholder="능력 이름 · 효과 검색" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-v="home">🏠 개요</button>
+      <button class="tab" data-v="codex">⚡ 능력 도감</button>
+      <button class="tab" data-v="event">🎏 이벤트 · 미공개</button>
+      <button class="tab" data-v="awaken">🌱 각성</button>
+      <button class="tab" data-v="donate">💎 후원 배율</button>
+      <button class="tab" data-v="balance">🛠️ 밸런스 건의</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════ 히어로 ══════════ -->
+<section class="hero">
+  <div class="hero-in">
+    <span class="eyebrow">⛏ 약탈 · 야생 능력자 서버 공식 도감</span>
+    <h1>서버의 <em>모든 능력</em>을<br>한 장에 담았습니다.</h1>
+    <p class="lead">랭크 · 쿨타임 · 효과를 인게임 데이터 그대로 옮겨 왔어요.
+      원하는 능력을 찾고, 후원 배율을 계산하고, 밸런스가 이상하다 싶으면 바로 건의서를 써서 보내주세요.</p>
+    <div class="hstats" id="hstats"></div>
+  </div>
+</section>
+
+<main class="wrap">
+
+<!-- ══════════ 개요 ══════════ -->
+<section class="view active" data-view="home">
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">01</span> 랭크 사다리</h2>
+    <p class="sec-sub">랭크를 누르면 해당 등급 능력만 모아서 도감으로 이동합니다. 아래 숫자는 실제 등록된 능력 수예요.</p>
+    <div class="ladder" id="ladder"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">02</span> 능력은 이렇게 생겼습니다</h2>
+    <p class="sec-sub">인게임 아이템 설명을 그대로 렌더링했어요. 도감의 모든 상세 화면은 이 형식으로 보입니다.</p>
+    <div class="panel" style="padding:18px 20px">
+      <div class="mctip" id="sampleTip"></div>
+      <p style="font-size:12px;color:var(--faint);margin-top:12px">
+        ▸ <b style="color:var(--text)">[ 랭크 ]</b> 등급 · <b style="color:var(--text)">쿨타임</b> 재사용 대기시간 ·
+        <b style="color:var(--text)">능력</b> 실제 효과. 쿨타임이 <b style="color:var(--gold)">없음</b>이면 상시 발동형(패시브에 가까움)입니다.
+      </p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">03</span> 능력 획득 경로</h2>
+    <p class="sec-sub">인게임에서 능력을 얻는 대표적인 통로입니다.</p>
+    <div class="gcards">
+      <div class="gc"><span class="gi">📦</span><h5>능력 뽑기 상자</h5>
+        <p>등급대별로 나뉜 상자에서 능력이 나옵니다.</p>
+        <ul><li>[ SS ~ SS+ ] 능력 뽑기 상자</li><li>[ SS+ ~ L ] 능력 뽑기 상자</li><li>상위 상자일수록 상위 랭크 확률 ↑</li></ul></div>
+      <div class="gc"><span class="gi">🎟️</span><h5>신규 능력 뽑기권</h5>
+        <p>후원 상점 · 마일리지 · 접속 보상으로 얻습니다.</p>
+        <ul><li>신규 능력 뽑기권 — 50 GC / 50 마일리지</li><li>프리미엄 신규 능력 뽑기권 — 550 GC / 550 마일리지</li></ul></div>
+      <div class="gc"><span class="gi">🧩</span><h5>능력 조각</h5>
+        <p>능력 합성 메뉴에서 <b>C 등급 능력</b>으로 교환할 수 있습니다.</p>
+        <ul><li>낮은 등급 능력 정리 → 조각 확보</li></ul></div>
+      <div class="gc"><span class="gi">💎</span><h5>후원 패키지</h5>
+        <p>GC 상점의 랭크 패키지로 상자를 한 번에 확보합니다.</p>
+        <ul><li>[ SS+ Rank ] 패키지 — 상자 15 + 뽑기권 10</li><li>[ L Rank ] 패키지 — 상자 10 + 프리미엄 5</li></ul></div>
+      <div class="gc"><span class="gi">🗡️</span><h5>약탈</h5>
+        <p><b>약탈자(S)</b> 능력은 가장 가까운 플레이어의 D~S 랭크 능력을 통째로 소멸시킵니다.</p>
+        <ul><li>고랭크 능력은 약탈 대상이 아님</li></ul></div>
+      <div class="gc"><span class="gi">🎏</span><h5>시즌 · 이벤트</h5>
+        <p>설날 등 시즌 이벤트 전용 능력은 3단계 강화 구조를 가집니다.</p>
+        <ul><li>단계가 오를수록 쿨타임 단축</li></ul></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">04</span> 데이터로 본 밸런스</h2>
+    <p class="sec-sub">건의서를 쓰기 전에 참고하세요. 아래는 도감 데이터에서 바로 계산한 실제 분포입니다.</p>
+    <div class="f2">
+      <div class="panel" style="padding:18px 20px">
+        <h5 style="font-family:var(--f-disp);font-size:13.5px;margin-bottom:14px">랭크별 평균 쿨타임</h5>
+        <div class="bars" id="barCd"></div>
+        <p style="font-size:11.5px;color:var(--faint);margin-top:12px">※ 쿨타임 「없음 / 패시브」 능력은 평균에서 제외했습니다.</p>
+      </div>
+      <div class="panel" style="padding:18px 20px">
+        <h5 style="font-family:var(--f-disp);font-size:13.5px;margin-bottom:14px">효과 유형 분포</h5>
+        <div class="bars" id="barTag"></div>
+        <p style="font-size:11.5px;color:var(--faint);margin-top:12px">※ 한 능력이 여러 유형에 동시에 속할 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ 능력 도감 ══════════ -->
+<section class="view" data-view="codex">
+  <div class="sec" style="margin-bottom:16px">
+    <h2 class="sec-h"><span class="n">⚡</span> 능력 도감</h2>
+    <p class="sec-sub">카드를 누르면 인게임 설명 전문과 건의서 바로가기가 열립니다.</p>
+  </div>
+
+  <div class="filters">
+    <div class="frow">
+      <span class="flabel">RANK</span>
+      <div id="fRank" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="frow">
+      <span class="flabel">TYPE</span>
+      <div id="fTag" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="frow">
+      <span class="flabel">FIND</span>
+      <div class="fsearch"><input id="fq" type="search" placeholder="이름 · 효과 · 아이디로 검색 (예: 순간이동, 저항, shinra)" autocomplete="off"></div>
+      <select id="fSort" class="fsel">
+        <option value="rank">정렬 · 랭크 높은 순</option>
+        <option value="rank-asc">정렬 · 랭크 낮은 순</option>
+        <option value="cd">정렬 · 쿨타임 짧은 순</option>
+        <option value="cd-desc">정렬 · 쿨타임 긴 순</option>
+        <option value="name">정렬 · 이름 가나다</option>
+      </select>
+      <button class="btn sm ghost" id="fReset">초기화</button>
+      <span class="fmeta" id="fMeta"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- ══════════ 이벤트 ══════════ -->
+<section class="view" data-view="event">
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">🎏</span> 시즌 이벤트 능력</h2>
+    <p class="sec-sub">이벤트 전용 능력은 같은 능력을 <b>3단계</b>까지 강화할 수 있습니다. 단계가 오를수록 쿨타임이 짧아지거나 사거리가 늘어납니다.</p>
+    <div id="evGroups"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">🔒</span> 미공개 능력</h2>
+    <p class="sec-sub">아이템은 등록되어 있지만 아직 정보가 공개되지 않은 능력입니다. 등급만 확인할 수 있어요.</p>
+    <div class="grid" id="lockGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ 각성 ══════════ -->
+<section class="view" data-view="awaken">
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">🌱</span> 각성 시스템</h2>
+    <p class="sec-sub">일부 능력에는 <b>각성 확인서</b>가 존재합니다. 땅을 클릭해 사용하면 확인서는 사라지고, 해당 능력이 <b>영구적으로</b> 강화된 형태로 바뀝니다.</p>
+    <div class="notice" style="margin-bottom:20px">
+      <span class="ni">💡</span>
+      <div>각성은 <b>계정에 영구 적용</b>됩니다. 능력 아이템을 잃어버려도 다시 얻으면 각성 상태로 동작해요.
+        아래 표에서 <b>각성 전 → 각성 후</b> 변화를 한눈에 비교할 수 있습니다.</div>
+    </div>
+    <div id="awakenList"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">📜</span> 각성 확인서 목록</h2>
+    <p class="sec-sub">현재 서버에 등록된 각성 확인서입니다.</p>
+    <div class="grid" id="certGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ 후원 배율 ══════════ -->
+<section class="view" data-view="donate">
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">💎</span> 후원 배율 표</h2>
+    <p class="sec-sub">후원 금액에 따라 지급되는 캐쉬 배율표입니다. <b>RPG 서버와 동일한 배율</b>을 사용합니다.</p>
+
+    <div class="tbl-wrap" style="margin-bottom:18px">
+      <table class="tbl">
+        <thead><tr><th>후원 금액 (이상)</th><th>배율</th><th class="num">지급 캐쉬</th><th>비고</th></tr></thead>
+        <tbody id="dnBody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--faint);margin-bottom:26px">
+      입력 금액에 해당하는 <b style="color:var(--text)">가장 높은 구간</b>의 배율이 적용됩니다 ·
+      지급 캐쉬 = 후원 금액 × 배율 <span style="color:var(--faint)">(소수점 버림)</span>
+    </p>
+
+    <div class="panel calc">
+      <h5 style="font-family:var(--f-disp);font-size:14px;margin-bottom:14px">후원 금액 → 지급 캐쉬 계산기</h5>
+      <div class="calc-in">
+        <input id="dnAmt" type="number" min="0" inputmode="numeric" placeholder="후원할 금액을 입력하세요 (예: 30000)" autocomplete="off">
+        <button class="btn pri" id="dnGo">계산</button>
+      </div>
+      <div class="quick" id="dnQuick"></div>
+      <div class="calc-out empty2" id="dnOut"><div class="big">금액을 입력하면 받는 캐쉬가 바로 계산됩니다.</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h5 style="font-family:var(--f-disp);font-size:14px;margin-bottom:14px">구간별 효율 비교 <span style="font-size:11px;color:var(--faint);font-family:var(--f-body)">— 1,000원당 받는 캐쉬</span></h5>
+    <div class="panel" style="padding:18px 20px"><div class="bars" id="dnBars"></div></div>
+
+    <div class="notice warn" style="margin-top:20px">
+      <span class="ni">⚠️</span>
+      <div><b>안내</b> · 캐쉬와 GC는 서버 내 유료 재화입니다. 후원 NPC를 통해 캐쉬를 GC로 교환하고, GC로 상점 품목을 구매합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 밸런스 건의 ══════════ -->
+<section class="view" data-view="balance">
+
+  <div class="sec">
+    <h2 class="sec-h"><span class="n">🛠️</span> 능력 밸런스 패치 건의소</h2>
+    <p class="sec-sub">"이 능력 좀 이상한데?" 싶을 때 쓰는 곳입니다. 단계별로 채우면 운영진이 바로 검토할 수 있는 형식의 건의서가 완성됩니다.</p>
+    <div class="notice" style="margin-bottom:22px">
+      <span class="ni">🔐</span>
+      <div>작성한 건의서는 <b>이 브라우저에만 저장</b>되며 자동으로 전송되지 않습니다.
+        완성 후 <b>복사</b> 버튼을 눌러 서버 건의 채널에 붙여넣어 주세요. 파일로 내보내 백업할 수도 있습니다.</div>
+    </div>
+  </div>
+
+  <!-- 작성 원칙 -->
+  <div class="sec">
+    <h3 class="sec-h" style="font-size:15px"><span class="n">📐</span> 건의 작성 기준</h3>
+    <p class="sec-sub">아래 4가지가 들어간 건의는 검토가 빠릅니다.</p>
+    <div class="gcards" style="margin-bottom:14px">
+      <div class="gc"><span class="gi">🎯</span><h5>1. 무엇이 문제인가</h5>
+        <p>"쎄다/약하다"가 아니라 <b>어떤 상황에서</b> 무너지는지를 씁니다.</p>
+        <ul><li>1:1인지 난전인지</li><li>상대 장비·랭크 조건</li><li>재현이 되는지</li></ul></div>
+      <div class="gc"><span class="gi">🔢</span><h5>2. 숫자로 쓴다</h5>
+        <p>쿨타임 · 사거리 · 지속시간 · 피해량 중 <b>바꿀 값 하나</b>를 지정합니다.</p>
+        <ul><li>현재 값 → 제안 값</li><li>여러 개면 우선순위 표기</li></ul></div>
+      <div class="gc"><span class="gi">🧪</span><h5>3. 근거를 붙인다</h5>
+        <p>몇 번 겪었는지, 어떤 조합에서 나왔는지 적습니다.</p>
+        <ul><li>반복 관측 사례</li><li>스크린샷 · 영상 링크</li></ul></div>
+      <div class="gc"><span class="gi">⚖️</span><h5>4. 부작용을 예측한다</h5>
+        <p>내 제안이 통과되면 <b>누가 손해</b>인지 같이 씁니다.</p>
+        <ul><li>연관 능력·시너지</li><li>PvE 쪽 영향</li></ul></div>
+    </div>
+    <div class="f2">
+      <div class="gc good"><span class="gi">✅</span><h5>좋은 예시</h5>
+        <p style="font-family:var(--f-mono);font-size:12px;line-height:1.75;color:var(--dim)">
+          대상 : 시공간 III (SS+)<br>
+          유형 : 하향 · 심각도 4<br>
+          상황 : 대규모 전쟁 (10인 이상)<br>
+          현재 : 왼손 소지 시 4칸 이내 상대 쿨타임 +5초, 상시<br>
+          제안 : 5초 → 3초, 또는 3초 내부 쿨타임 추가<br>
+          근거 : 3인이 동시에 들면 사실상 상대 능력이 영구 봉인. 어제 성 앞 교전 3회 모두 동일<br>
+          부작용 : 소수 인원 팀은 약해짐 → 인원수 비례 감쇄를 대안으로 제시
+        </p></div>
+      <div class="gc bad"><span class="gi">❌</span><h5>피해야 할 예시</h5>
+        <p style="font-family:var(--f-mono);font-size:12px;line-height:1.75;color:var(--dim)">
+          "○○ 능력 너무 사기임 너프좀"<br><br>
+          → 어떤 상황인지 없음<br>
+          → 바꿀 수치가 없음<br>
+          → 몇 번 겪었는지 없음<br>
+          → 특정 유저 저격만 있음<br><br>
+          이런 건의는 검토 자체가 불가능해서 보류됩니다.
+        </p></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 처리 절차 -->
+  <div class="sec">
+    <h3 class="sec-h" style="font-size:15px"><span class="n">🔄</span> 건의 처리 흐름</h3>
+    <p class="sec-sub">보관함에서 각 건의의 상태를 직접 바꿔 진행 상황을 추적할 수 있습니다.</p>
+    <div class="pipeline">
+      <div class="pl"><span class="pn2">STEP 1</span><b>작성중</b><p>도감에서 대상을 고르고 항목을 채웁니다.</p></div>
+      <div class="pl"><span class="pn2">STEP 2</span><b>제출됨</b><p>복사해서 서버 건의 채널에 올립니다.</p></div>
+      <div class="pl"><span class="pn2">STEP 3</span><b>검토중</b><p>운영진이 재현·수치 확인을 진행합니다.</p></div>
+      <div class="pl"><span class="pn2">STEP 4</span><b>반영 / 보류</b><p>패치노트에 올라가거나 사유와 함께 보류됩니다.</p></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 폼 -->
+  <div class="sec">
+    <h3 class="sec-h" style="font-size:15px"><span class="n">✍️</span> 건의서 작성</h3>
+    <p class="sec-sub">필수 항목을 채울수록 오른쪽 완성도가 올라갑니다. 80% 이상을 권장합니다.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start" id="formLayout">
+      <div>
+        <!-- 1 대상 -->
+        <div class="step" id="st1">
+          <div class="step-h"><span class="sn">1</span><h4>대상 능력</h4><span class="req">필수</span></div>
+          <div class="acbox">
+            <input id="abSearch" type="text" placeholder="능력 이름을 입력하세요 (예: 신라천정, 무하한, 원펀맨)" autocomplete="off">
+            <div class="aclist" id="abList"></div>
+          </div>
+          <div class="picked none" id="abPicked" style="margin-top:11px">아직 선택된 능력이 없습니다</div>
+        </div>
+
+        <!-- 2 유형/심각도 -->
+        <div class="step" id="st2">
+          <div class="step-h"><span class="sn">2</span><h4>건의 유형 · 심각도</h4><span class="req">필수</span></div>
+          <div class="f2" style="margin-bottom:14px">
+            <div><label>건의 유형</label>
+              <select id="bKind">
+                <option value="">— 선택 —</option>
+                <option value="up">상향 (너무 약함)</option>
+                <option value="down">하향 (너무 강함)</option>
+                <option value="remake">리메이크 (구조 자체를 바꿔야 함)</option>
+                <option value="bug">버그 · 오작동</option>
+                <option value="new">신규 능력 제안</option>
+                <option value="etc">기타 · 표기 오류</option>
+              </select></div>
+            <div><label>닉네임 <span class="hint">인게임 닉네임</span></label>
+              <input id="bNick" type="text" placeholder="예: Steve123" autocomplete="off"></div>
+          </div>
+          <label>심각도 <span class="hint">지금 당장 얼마나 급한가</span></label>
+          <div class="sevbar" id="bSev">
+            <button class="sev" data-v="1">1 · 사소</button>
+            <button class="sev" data-v="2">2 · 낮음</button>
+            <button class="sev" data-v="3">3 · 보통</button>
+            <button class="sev" data-v="4">4 · 심각</button>
+            <button class="sev" data-v="5">5 · 즉시</button>
+          </div>
+        </div>
+
+        <!-- 3 문제 유형 -->
+        <div class="step" id="st3">
+          <div class="step-h"><span class="sn">3</span><h4>문제 유형</h4><span class="req">1개 이상</span></div>
+          <div id="bIssue" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+        </div>
+
+        <!-- 4 상황 -->
+        <div class="step" id="st4">
+          <div class="step-h"><span class="sn">4</span><h4>발생 상황</h4><span class="req">1개 이상</span></div>
+          <div id="bScene" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+        </div>
+
+        <!-- 5 수치 -->
+        <div class="step" id="st5">
+          <div class="step-h"><span class="sn">5</span><h4>현재 → 제안 수치</h4><span class="req">필수</span></div>
+          <div class="ba">
+            <div class="now"><label>현재 (AS-IS)</label>
+              <textarea id="bNow" placeholder="지금 어떻게 동작하는지 수치로 적어주세요.&#10;예) 쿨타임 20초 / 범위 20칸 / 지속 5초"></textarea></div>
+            <div class="arw">➜</div>
+            <div class="aft"><label>제안 (TO-BE)</label>
+              <textarea id="bAfter" placeholder="어떻게 바꾸면 좋을지 적어주세요.&#10;예) 쿨타임 20초 → 30초, 범위 20칸 → 12칸"></textarea></div>
+          </div>
+        </div>
+
+        <!-- 6 근거 -->
+        <div class="step" id="st6">
+          <div class="step-h"><span class="sn">6</span><h4>근거 · 관측 사례</h4><span class="req">필수</span></div>
+          <textarea id="bWhy" placeholder="언제, 몇 번, 어떤 조합에서 겪었는지 적어주세요.&#10;예) 8/1 성 앞 교전 4회 중 4회 모두 상대가 이 능력만으로 3인을 묶었습니다. 상대는 SS+ 조합, 저희는 A~S 조합이었습니다."></textarea>
+          <div class="f2" style="margin-top:12px">
+            <div><label>반복 재현 <span class="hint">같은 상황에서 항상 발생?</span></label>
+              <select id="bRepro">
+                <option value="">— 선택 —</option>
+                <option value="항상 재현됨">항상 재현됨</option>
+                <option value="자주 재현됨">자주 재현됨</option>
+                <option value="가끔 재현됨">가끔 재현됨</option>
+                <option value="1회만 목격">1회만 목격</option>
+              </select></div>
+            <div><label>참고 자료 <span class="hint">선택</span></label>
+              <input id="bLink" type="text" placeholder="영상 · 스크린샷 링크" autocomplete="off"></div>
+          </div>
+        </div>
+
+        <!-- 7 부작용 -->
+        <div class="step" id="st7">
+          <div class="step-h"><span class="sn">7</span><h4>예상 영향 · 부작용</h4><span class="opt">권장</span></div>
+          <textarea id="bSide" placeholder="이 제안이 반영되면 누가 손해를 보는지, 다른 능력과의 조합은 어떻게 되는지 적어주세요.&#10;예) 소수 인원 팀은 오히려 약해집니다. 대안으로 인원수 비례 감쇄를 제안합니다."></textarea>
+          <div style="margin-top:12px"><label>연관 능력 <span class="hint">선택 · 쉼표로 구분</span></label>
+            <input id="bRel" type="text" placeholder="예: 무하한, 케디스" autocomplete="off"></div>
+        </div>
+      </div>
+
+      <!-- 사이드 -->
+      <div style="position:sticky;top:80px">
+        <div class="panel scorebox">
+          <div class="ring">
+            <svg width="78" height="78" viewBox="0 0 78 78">
+              <circle cx="39" cy="39" r="33" fill="none" stroke="#252d42" stroke-width="8"></circle>
+              <circle id="ringFill" cx="39" cy="39" r="33" fill="none" stroke="url(#rg)" stroke-width="8"
+                      stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"></circle>
+              <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#8b6bff"/><stop offset="100%" stop-color="#3fd8ff"/></linearGradient></defs>
+            </svg>
+            <div class="rv" id="ringVal">0%</div>
+          </div>
+          <div class="sinfo">
+            <b id="scoreTitle">건의 완성도</b>
+            <p id="scoreDesc">항목을 채우면 올라갑니다</p>
+            <div class="missing" id="missing"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn pri" id="bSave" style="flex:1">💾 보관함에 저장</button>
+          <button class="btn ghost" id="bClear">비우기</button>
+        </div>
+
+        <div class="panel" style="padding:15px 16px;margin-top:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px;flex-wrap:wrap">
+            <b style="font-family:var(--f-disp);font-size:13px">미리보기</b>
+            <div class="segbtns" id="fmtSeg">
+              <button class="on" data-f="plain">일반</button>
+              <button data-f="md">마크다운</button>
+              <button data-f="mc">인게임</button>
+            </div>
+          </div>
+          <div class="outbox" id="bOut" style="max-height:260px">대상 능력을 선택하면 여기에 건의서가 만들어집니다.</div>
+          <div style="display:flex;gap:7px;margin-top:11px">
+            <button class="btn sm pri" id="bCopy" style="flex:1">📋 복사</button>
+            <button class="btn sm" id="bDl">⬇ .txt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 보관함 -->
+  <div class="sec">
+    <h3 class="sec-h" style="font-size:15px"><span class="n">📁</span> 내 건의 보관함</h3>
+    <p class="sec-sub">저장한 건의서 목록입니다. 상태를 바꿔 진행 상황을 관리하고, 파일로 내보내 백업하세요.</p>
+    <div class="frow" style="margin-bottom:14px">
+      <div class="fsearch"><input id="repQ" type="search" placeholder="보관함 검색" autocomplete="off"></div>
+      <select id="repFilter" class="fsel">
+        <option value="">전체 상태</option>
+        <option value="draft">작성중</option><option value="sent">제출됨</option>
+        <option value="review">검토중</option><option value="done">반영</option>
+        <option value="hold">보류</option><option value="rej">반려</option>
+      </select>
+      <button class="btn sm" id="repExport">⬇ 전체 내보내기</button>
+      <button class="btn sm" id="repImport">⬆ 가져오기</button>
+      <input type="file" id="repFile" accept="application/json" hidden>
+      <span class="fmeta" id="repMeta"></span>
+    </div>
+    <div id="repList" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- 능력 상세 모달 -->
+<div class="mask" id="mask">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   DATA — behavior_packs/야능팩/items 에서 추출한 실제 아이템 데이터
+   ══════════════════════════════════════════════════════════ */
+const AB = [{"id":"kr:ability_piece","name":"능력 조각","rank":"—","cd":"—","cds":null,"cdk":"none","cat":"material","tags":[],"awaken":false,"desc":"능력 합성 메뉴에서 C등급 능력으로 교환할 수 있습니다.","rich":"§d능력 조각\n\n§7능력 합성 메뉴에서 C등급 능력으로 교환할 수 있습니다.","file":"ability_piece.json"},{"id":"kr:ability_doduk","name":"도둑","rank":"Event","cd":"120초","cds":120,"cdk":"active","cat":"core","tags":["탈취·경제"],"awaken":false,"desc":"","rich":"§l§f[ §cE§6v§ee§an§bt§f Rank ]§f 도둑 §1쿨타임 : 120초 §6능력 : 10칸 이내 상대방 10만 포인트 삭제 [ 악용 시 , 밴 ]","file":"ability_doduk.json"},{"id":"kr:ability_jogo1","name":"개관철위산","rank":"X","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["영역전개"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 죠고의 영역전개를 발동합니다.","rich":"[ §cX §4R§ca§4n§ck§f ] 개관철위산\n\n§d쿨타임 : 60초\n§7능력 : 죠고의 영역전개를 발동합니다.","file":"ability_jogo1.json"},{"id":"kr:ability_real_goku","name":"무의식의 극의 +","rank":"X","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","이동·기동","카운터"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손에 들고 있고 물리 피해를 받았을 때, 95퍼센트 확률로 무시하고 주변으로 순간이동 합니다.","rich":"[ §cX §4R§ca§4n§ck§f ] 무의식의 극의 +\n\n§d쿨타임 : 없음\n§7능력 : 왼손에 들고 있고 물리 피해를 받았을 때, 95퍼센트 확률로 무시하고 주변으로 순간이동 합니다.","file":"ability_apo - 복사본 (3).json"},{"id":"kr:ability_sup","name":"무한 츠쿠요미","rank":"X","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 상대방 때릴 시, 죽어야 사라지는 영원한 쿨타임 부여 및 왼손 장착 시, 15칸 이내 엔티티에게 쿨타임 부여","rich":"[ §cX §4R§ca§4n§ck§f ] 무한 츠쿠요미\n\n§d쿨타임 : 25초\n§7능력 : 상대방 때릴 시, 죽어야 사라지는 영원한 쿨타임 부여 및 왼손 장착 시, 15칸 이내 엔티티에게 쿨타임 부여","file":"ability_sup.json"},{"id":"kr:ability_black1","name":"블랙홀","rank":"X","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["군중제어","소환"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 클릭 시 블랙홀 소환 , 25칸 이내의 플레이어들을 블랙홀에 강제 흡수","rich":"[ §cX §4R§ca§4n§ck§f ] 블랙홀\n\n§d쿨타임 : 25초\n§7능력 : 클릭 시 블랙홀 소환 , 25칸 이내의 플레이어들을 블랙홀에 강제 흡수","file":"ability_black.json"},{"id":"kr:ability_real_kamui","name":"각성된 카무이","rank":"L","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["이동·기동"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 왼손에 들고 웅크린 채 5초 동안 움직이지 않고 피해를 받지 않으면 자신만의 아공간으로 이동합니다. 아공간에서는 비행할 수 있으며 30초 후 복귀합니다.\n\n우클릭 : 15칸 이내 가장 가까운 엔티티를 자신의 아공간에 15초 동안 가둡니다.","rich":"[ §bL Rank§f ] 각성된 카무이\n\n§d쿨타임 : 30초\n§7능력 : 왼손에 들고 웅크린 채 5초 동안 움직이지 않고 피해를 받지 않으면 자신만의 아공간으로 이동합니다. 아공간에서는 비행할 수 있으며 30초 후 복귀합니다.\n\n§e우클릭 §7: 15칸 이내 가장 가까운 엔티티를 자신의 아공간에 15초 동안 가둡니다.","file":"ability_goku - 복사본.json"},{"id":"kr:ability_gold","name":"골드 로저","rank":"L","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 데미지 48 + 신속 9","rich":"[ §bL Rank§f ]§f 골드 로저\n\n§d쿨타임 : 없음\n§7능력 : 데미지 48 + 신속 9","file":"ability_gold.json"},{"id":"kr:ability_gon4","name":"공허 소환수 IV","rank":"L","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 자신만의 공허 소환수를 소환합니다.","rich":"[ §bL Rank§f ] 공허 소환수 IV\n\n§d쿨타임 : 30초\n§7능력 : 자신만의 공허 소환수를 소환합니다.","file":"ability_gon1 - 복사본 (3).json"},{"id":"kr:ability_jogo2","name":"극번","rank":"L","cd":"360초","cds":360,"cdk":"active","cat":"core","tags":["투사체"],"awaken":false,"desc":"쿨타임 : 360초\n능력 : 죠고의 영혼의 담긴 극번을 발사합니다.","rich":"[ §bL Rank§f ] 극번\n\n§d쿨타임 : 360초\n§7능력 : 죠고의 영혼의 담긴 극번을 발사합니다.","file":"ability_jogo2.json"},{"id":"kr:ability_click2","name":"노력의 결실 II","rank":"L","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 클릭할 때 마다 자신의 쿨타임 2초 감소","rich":"[ §bL Rank§f ] 노력의 결실 II\n\n§d쿨타임 : 없음\n§7능력 : 클릭할 때 마다 자신의 쿨타임 §b2초§7 감소","file":"ability_click2.json"},{"id":"kr:ability_domain","name":"무량공처","rank":"L","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["영역전개"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 고죠 사토루의 영역전개를 발동 합니다.","rich":"[ §bL Rank§f ] 무량공처\n\n§d쿨타임 : 20초\n§7능력 : §b고죠 사토루의 영역전개를 발동 합니다.","file":"ability_domain.json"},{"id":"kr:ability_goku1","name":"무의식의 극의","rank":"L","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 왼손에 들고있을 때, 플레이어가 사망 직전 인벤토리에 불사의 토템이 적어도 1개 이상 있으면 1개 소모 되고 1회 부활 합니다.","rich":"[ §bL Rank§f ] 무의식의 극의\n\n§d쿨타임 : 15초\n§7능력 : 왼손에 들고있을 때, 플레이어가 사망 직전 인벤토리에 불사의 토템이 적어도 1개 이상 있으면 1개 소모 되고 1회 부활 합니다.","file":"ability_goku.json"},{"id":"kr:ability_domain2","name":"복마어주자","rank":"L","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["영역전개"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 료멘 스쿠나의 영역전개를 발동 합니다.","rich":"[ §bL Rank§f ] 복마어주자\n\n§d쿨타임 : 25초\n§7능력 : §c료멘 스쿠나의 영역전개를 발동 합니다.","file":"ability_domain2.json"},{"id":"kr:ability_super_death_note","name":"슈퍼 데스노트","rank":"L","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","즉사·처형","1회용"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 자신을 기준으로 가장 가까이 있는 플레이어를 즉사 , 본인 능력 뽑기 상자 3개 지급 [ 1회용 ]","rich":"[ §bL Rank§f ] 슈퍼 데스노트\n\n§d쿨타임 : 없음\n§7능력 : 자신을 기준으로 가장 가까이 있는 플레이어를 즉사 , 본인 능력 뽑기 상자 3개 지급 [ 1회용 ]","file":"ability_super_death_note.json"},{"id":"kr:ability_knock4","name":"장풍 IV","rank":"L","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","rich":"[ §bL Rank§f ] 장풍 IV\n\n§d쿨타임 : 없음\n§7능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","file":"ability_knock - 복사본 (3).json"},{"id":"kr:ability_eye3","name":"츠쿠요미","rank":"L","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["군중제어","광역"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 주변의 있는 엔티티들의 움직임을 멈추고 강력한 피해를 입힌다.","rich":"[ §bL Rank§f ] 츠쿠요미\n\n§d쿨타임 : 15초\n§7능력 : 주변의 있는 엔티티들의 움직임을 멈추고 강력한 피해를 입힌다.","file":"ability_eye3.json"},{"id":"kr:ability_sword","name":"풍연","rank":"L","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["광역","소환"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 검을 소환하여 주변의 엔티티들을 공격 합니다.","rich":"[ §bL Rank§f ] 풍연\n\n§d쿨타임 : 20초\n§7능력 : 검을 소환하여 주변의 엔티티들을 공격 합니다.","file":"ability_sword.json"},{"id":"kr:ability_pow","name":"POW","rank":"L","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 엔티티 공격 시 , 즉시 피해 II 1초","rich":"[ §bL Rank§f ] POW\n\n§d쿨타임 : 없음\n§7능력 : 엔티티 공격 시 , 즉시 피해 II 1초","file":"ability_pow.json"},{"id":"kr:ability_new2lock","name":"???","rank":"SS+","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §7SS+ Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy.json"},{"id":"kr:ability_new1lock","name":"???","rank":"SS+","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §7SS+ Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본.json"},{"id":"kr:ability_real_mot","name":"각성된 대못펀치","rank":"SS+","cd":"5초","cds":5,"cdk":"active","cat":"core","tags":["생존·회복","투사체"],"awaken":false,"desc":"쿨타임 : 5초\n능력 : 땅 클릭 시, 저항 V를 3초간 얻고 아주 강력한 토리코의 대못펀치를 발사합니다.","rich":"[ §7SS+ Rank§f ] 각성된 대못펀치\n\n§d쿨타임 : 5초\n§7능력 : 땅 클릭 시, §b저항 V§7를 3초간 얻고 §b아주 강력한§7 토리코의 대못펀치를 발사합니다.","file":"ability_ketlin - 복사본.json"},{"id":"kr:ability_new21","name":"간이 영역","rank":"SS+","cd":"90초","cds":90,"cdk":"active","cat":"event","tags":["영역전개","쿨타임 조작","소환"],"awaken":false,"desc":"쿨타임 : 90초\n능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","rich":"[ §7SS+ Rank§f ]§f §e간이 영역\n\n§d쿨타임 : §e90§d초\n§7능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","file":"설날/ability_new1 - 복사본.json","grp":2,"tier":1,"tierMax":3},{"id":"kr:ability_new22","name":"간이 영역","rank":"SS+","cd":"60초","cds":60,"cdk":"active","cat":"event","tags":["영역전개","쿨타임 조작","소환"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","rich":"[ §7SS+ Rank§f ]§f §e간이 영역\n\n§d쿨타임 : §e60§d초\n§7능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","file":"설날/ability_new1 copy - 복사본.json","grp":2,"tier":2,"tierMax":3},{"id":"kr:ability_new23","name":"간이 영역","rank":"SS+","cd":"30초","cds":30,"cdk":"active","cat":"event","tags":["영역전개","쿨타임 조작","소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","rich":"[ §7SS+ Rank§f ]§f §e간이 영역\n\n§d쿨타임 : §e30§d초\n§7능력 : 간이 영역을 소환 합니다. 간이 영역 안에서는 사용자의 쿨타임 시간이 사라집니다.","file":"설날/ability_new1 copy 2 - 복사본.json","grp":2,"tier":3,"tierMax":3},{"id":"kr:ability_gon3","name":"공허 소환수 III","rank":"SS+","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 자신만의 공허 소환수를 소환합니다.","rich":"[ §7SS+ Rank§f ] 공허 소환수 III\n\n§d쿨타임 : 30초\n§7능력 : 자신만의 공허 소환수를 소환합니다.","file":"ability_gon1 - 복사본 (2).json"},{"id":"kr:ability_ryze","name":"라이즈","rank":"SS+","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["광역","투사체"],"awaken":false,"desc":"쿨타임 : 3초\n능력 : 차원문 포탈을 열어 15칸 이내 엔티티들중 최대 7마리 에게 구체를 발사 합니다.","rich":"[ §7SS+ Rank§f ] 라이즈\n\n§d쿨타임 : 3초\n§7능력 : 차원문 포탈을 열어 15칸 이내 엔티티들중 최대 7마리 에게 구체를 발사 합니다.","file":"abiltiy_ryze.json"},{"id":"kr:ability_bansho","name":"만상천인","rank":"SS+","cd":"12초","cds":12,"cdk":"active","cat":"core","tags":["군중제어","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 12초\n능력 : 70칸 이내에 있는 엔티티 모두 끌어오고 쿨타임 10초 부여","rich":"[ §7SS+ Rank§f ] 만상천인\n\n§d쿨타임 : 12초\n§7능력 : 70칸 이내에 있는 엔티티 모두 끌어오고 쿨타임 10초 부여","file":"ability_bansho.json"},{"id":"kr:ability_fortune2","name":"모세의 기적","rank":"SS+","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["버프"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 클릭 시 , 상태 면역 30초를 획득 합니다.","rich":"[ §7SS+ Rank§f ] 모세의 기적\n\n§d쿨타임 : 60초\n§7능력 : 클릭 시 , §b상태 면역 30초§7를 획득 합니다.","file":"ability_fortune2.json"},{"id":"kr:ability_muhan","name":"무하한","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 주변에 있는 엔티티의 움직임을 강제로 멈춥니다. ( 클릭 시 ON / OFF 가능 )","rich":"[ §7SS+ Rank§f ] 무하한\n\n§d쿨타임 : 없음\n§7능력 : 주변에 있는 엔티티의 움직임을 강제로 멈춥니다. ( 클릭 시 ON / OFF 가능 )","file":"ability_muhan.json"},{"id":"kr:ability_bli","name":"블리자드","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 물리 공격 ( 주먹 ) 데미지를 모두 1로 전환","rich":"[ §7SS+ Rank§f ] 블리자드\n\n§d쿨타임 : 없음\n§7능력 : 물리 공격 ( 주먹 ) 데미지를 모두 1로 전환","file":"ability_bli.json"},{"id":"kr:ability_wang","name":"승천의 부적","rank":"SS+","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["고정 피해","카운터"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 땅 클릭 시, 20초 동안 크기 및 체력 400 + 넉백 무시 + 기본 공격 데미지 4","rich":"[ §7SS+ Rank§f ] 승천의 부적\n\n§d쿨타임 : 60초\n§7능력 : 땅 클릭 시, 20초 동안 크기 및 체력 400 + 넉백 무시 + 기본 공격 데미지 4","file":"ability_wang.json"},{"id":"kr:ability_cool3","name":"시공간 III","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손에 들고 있을 때 4칸 이내 플레이어 쿨타임 5초씩 증가","rich":"[ §7SS+ Rank§f ] 시공간 III\n\n§d쿨타임 : 없음\n§7능력 : 왼손에 들고 있을 때 4칸 이내 플레이어 쿨타임 §e5초§7씩 증가","file":"ability_cool3.json"},{"id":"kr:ability_report","name":"신고합니다","rank":"SS+","cd":"30분","cds":1800,"cdk":"active","cat":"core","tags":["군중제어","광역"],"awaken":false,"desc":"우클릭 · 재사용 30분\n반경 20블록 내 플레이어의 능력 봉인 투표를 발의합니다.\n과반 찬성 시 대상, 부결 시 발의자가 10분간 봉인되고 이름이 빨간색으로 표시됩니다.","rich":"[ §7SS+ Rank§f ] 신고합니다\n\n§d우클릭 · 재사용 30분\n§7반경 20블록 내 플레이어의 능력 봉인 투표를 발의합니다.\n§7과반 찬성 시 대상, 부결 시 발의자가 10분간 봉인되고 이름이 빨간색으로 표시됩니다.","file":"ability_report.json"},{"id":"kr:ability_shinra","name":"신라천정 II","rank":"SS+","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 저항 3 부여 및 발 밑의 강한 폭발","rich":"[ §7SS+ Rank§f ] 신라천정 II\n\n§d쿨타임 : 20초\n§7능력 : 저항 3 부여 및 발 밑의 강한 폭발","file":"ability_shinra.json"},{"id":"kr:ability_apo","name":"아포칼립스","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 데미지 24 + 신속 III","rich":"[ §7SS+ Rank§f ] 아포칼립스\n\n§d쿨타임 : 없음\n§7능력 : 데미지 24 + 신속 III","file":"ability_apo.json"},{"id":"kr:ability_ice_wizard","name":"얼음 마법사","rank":"SS+","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["군중제어"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 자신을 기준으로 15칸 이내의 엔티티를 얼음으로 가두고 수면 IV 7초 부여","rich":"[ §7SS+ Rank§f ] 얼음 마법사\n\n§d쿨타임 : 25초\n§7능력 : 자신을 기준으로 15칸 이내의 엔티티를 얼음으로 가두고 §b수면 IV 7초§7 부여","file":"ability_ice_wizard.json"},{"id":"kr:ability_one","name":"원펀맨","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 고정 데미지 28","rich":"[ §7SS+ Rank ]§f 원펀맨\n\n§d쿨타임 : 없음\n§7능력 : 고정 데미지 28","file":"ability_one.json"},{"id":"kr:ability_wither","name":"위더","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","디버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 고정 데미지 10 및 상대방에게 공격할 때마다 빗나감 X 10초 부여","rich":"[ §7SS+ Rank§f ] 위더\n\n§d쿨타임 : 없음\n§7능력 : 고정 데미지 10 및 상대방에게 공격할 때마다 §c빗나감 X 10초§7 부여","file":"ability_wither.json"},{"id":"kr:ability_eye2","name":"윤회안","rank":"SS+","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["이동·기동"],"awaken":false,"desc":"쿨타임 : 3초\n능력 : 허공 클릭 시 50칸 이내의 상대방과 나의 자리를 바꿈","rich":"[ §7SS+ Rank§f ] 윤회안\n\n§d쿨타임 : 3초\n§7능력 : 허공 클릭 시 50칸 이내의 상대방과 나의 자리를 바꿈","file":"ability_eye2.json"},{"id":"kr:ability_knock3","name":"장풍 III","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","rich":"[ §7SS+ Rank§f ] 장풍 III\n\n§d쿨타임 : 없음\n§7능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","file":"ability_knock - 복사본 (2).json"},{"id":"kr:ability_bot","name":"제시","rank":"SS+","cd":"50초","cds":50,"cdk":"active","cat":"core","tags":["소환","투사체"],"awaken":false,"desc":"쿨타임 : 50초\n능력 : 봇 소환 [ 체력 : 1000 , 투사체 : 화살 ] 30초 뒤 사라짐","rich":"[ §7SS+ Rank§f ] 제시\n\n§d쿨타임 : 50초\n§7능력 : 봇 소환 [ 체력 : 1000 , 투사체 : 화살 ] 30초 뒤 사라짐","file":"ability_bot.json"},{"id":"kr:ability_jipok","name":"지폭천성","rank":"SS+","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["군중제어","광역"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 땅 속의 에너지를 모아 운석을 만든 다음 10칸 이내 주변 엔티티를 흡수 합니다.","rich":"[ §7SS+ Rank§f ] 지폭천성\n\n§d쿨타임 : 60초\n§7능력 : 땅 속의 에너지를 모아 운석을 만든 다음 10칸 이내 주변 엔티티를 흡수 합니다.","file":"ability_jipok.json"},{"id":"kr:ability_kanis","name":"카니스","rank":"SS+","cd":"25~35초","cds":25,"cdk":"multi","cat":"core","tags":["군중제어","이동·기동","소환","생존·회복","고정 피해","카운터"],"awaken":false,"desc":"쿨타임 :\nㆍ 말 재소환 35초\nㆍ 랜스 충전 25초\n\n능력 :\nㆍ 우클릭 : 말을 소환하여 탑승합니다.\n  말에서 내린 후 35초간 재소환할 수 없습니다.\n\nㆍ 좌클릭 : 쾌속 질주를 사용합니다.\n  말이 8초간 기력을 모두 소모하여 질주하며,\n  말의 기력 단계가 높을수록 이동 속도가 증가합니다.\n\nㆍ 패시브 : 말 기력\n  쾌속 질주가 아닐 때 말의 기력이\n  최대 3단계까지 서서히 회복됩니다.\n\nㆍ 패시브 : 랜스\n  말에 탑승 중일 때 25초마다 충전됩니다.\n  충전 상태에서 근접 공격 시 방어 관통 공격을 하며,\n  원래 피해의 40%를 추가로 가합니다.\n  쾌속 질주 중 랜스로 공격하면\n  기력 단계에 따라 피해가 50% / 75% / 100%로 증가합니다.\n\nㆍ 패시브 : 하나가 되어\n  말에서 내리면 말의 현재 체력 일부를\n  2초간 유지되는 흡수 체력으로 전환합니다.\n\nㆍ 패시브 : 저지 불가\n  넉백 및 끌어당김 효과를 받지 않습니다.","rich":"[ §7SS+ Rank§f ] 카니스\n\n§d쿨타임 :\n§7ㆍ 말 재소환 35초\n§7ㆍ 랜스 충전 25초\n\n§d능력 :\n§fㆍ §e우클릭§f : 말을 소환하여 탑승합니다.\n§7  말에서 내린 후 35초간 재소환할 수 없습니다.\n\n§fㆍ §e좌클릭§f : §b쾌속 질주§f를 사용합니다.\n§7  말이 8초간 기력을 모두 소모하여 질주하며,\n§7  말의 기력 단계가 높을수록 이동 속도가 증가합니다.\n\n§fㆍ §a패시브§f : §b말 기력\n§7  쾌속 질주가 아닐 때 말의 기력이\n§7  최대 3단계까지 서서히 회복됩니다.\n\n§fㆍ §a패시브§f : §d랜스\n§7  말에 탑승 중일 때 25초마다 충전됩니다.\n§7  충전 상태에서 근접 공격 시 방어 관통 공격을 하며,\n§7  원래 피해의 40%를 추가로 가합니다.\n§7  쾌속 질주 중 랜스로 공격하면\n§7  기력 단계에 따라 피해가 50% / 75% / 100%로 증가합니다.\n\n§fㆍ §a패시브§f : §b하나가 되어\n§7  말에서 내리면 말의 현재 체력 일부를\n§7  2초간 유지되는 흡수 체력으로 전환합니다.\n\n§fㆍ §a패시브§f : §c저지 불가\n§7  넉백 및 끌어당김 효과를 받지 않습니다.","file":"ability_apo - 복사본.json"},{"id":"kr:ability_kedis","name":"케디스","rank":"SS+","cd":"8초","cds":8,"cdk":"active","cat":"core","tags":["군중제어","광역"],"awaken":false,"desc":"쿨타임 : 8초\n능력 : 7칸 이내 엔티티들을 3초간 강제 속박","rich":"[ §7SS+ Rank§f ] 케디스\n\n§d쿨타임 : 8초\n§7능력 : 7칸 이내 엔티티들을 3초간 강제 속박","file":"ability_kedis.json"},{"id":"kr:ability_ketlin","name":"케이틀린","rank":"SS+","cd":"1초","cds":1,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 1초\n능력 : 사거리 한 칸당 피해량 3씩 증가합니다.","rich":"[ §7SS+ Rank§f ] 케이틀린\n\n§d쿨타임 : 1초\n§7능력 : 사거리 한 칸당 피해량 3씩 증가합니다.","file":"ability_ketlin.json"},{"id":"kr:ability_gae","name":"쿠 훌린의 창","rank":"SS+","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["투사체"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 바라보는 방향으로 아주 강력한 쿠 훌린의 창을 발사합니다.","rich":"[ §7SS+ Rank§f ] 쿠 훌린의 창\n\n§d쿨타임 : 60초\n§7능력 : 바라보는 방향으로 아주 강력한 쿠 훌린의 창을 발사합니다.","file":"ability_gae.json"},{"id":"kr:ability_energy","name":"크리스","rank":"SS+","cd":"50초","cds":50,"cdk":"active","cat":"core","tags":["즉사·처형","광역"],"awaken":false,"desc":"쿨타임 : 50초\n능력 : 25칸 이내의 가장 가까운 엔티티 3명에게 즉사 IV 20초 부여","rich":"[ §7SS+ Rank§f ] 크리스\n\n§d쿨타임 : 50초\n§7능력 : 25칸 이내의 가장 가까운 엔티티 3명에게 §c즉사 IV 20초§7 부여","file":"ability_energy.json"},{"id":"kr:ability_klemis","name":"클레미스","rank":"SS+","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","탈취·경제","1회용"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 상대방 타격 시, 상대방이 들고 있는 아이템 강제로 가져옵니다. (1회용)","rich":"[ §7SS+ Rank§f ] 클레미스\n\n§d쿨타임 : 없음\n§7능력 : 상대방 타격 시, 상대방이 들고 있는 아이템 강제로 가져옵니다. (1회용)","file":"ability_apo - 복사본 (2).json"},{"id":"kr:ability_gaia","name":"킬링 블로우","rank":"SS+","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 토우지로 둔갑하는데..","rich":"[ §7SS+ Rank§f ] 킬링 블로우\n\n§d쿨타임 : 20초\n§7능력 : §b토우지§7로 둔갑하는데..","file":"ability_gaia.json"},{"id":"kr:ability_new13","name":"플라워","rank":"SS+","cd":"12초","cds":12,"cdk":"active","cat":"event","tags":["소환"],"awaken":false,"desc":"쿨타임 : 12초\n능력 : 아주 강력한 식물을 소환 합니다.","rich":"[ §7SS+ Rank§f ]§f §e플라워\n\n§d쿨타임 : §e12§d초\n§7능력 : 아주 강력한 식물을 소환 합니다.","file":"설날/ability_new1 copy 2.json","grp":1,"tier":3,"tierMax":3},{"id":"kr:ability_new12","name":"플라워","rank":"SS+","cd":"16초","cds":16,"cdk":"active","cat":"event","tags":["소환"],"awaken":false,"desc":"쿨타임 : 16초\n능력 : 아주 강력한 식물을 소환 합니다.","rich":"[ §7SS+ Rank§f ]§f §e플라워\n\n§d쿨타임 : §e16§d초\n§7능력 : 아주 강력한 식물을 소환 합니다.","file":"설날/ability_new1 copy.json","grp":1,"tier":2,"tierMax":3},{"id":"kr:ability_new11","name":"플라워","rank":"SS+","cd":"20초","cds":20,"cdk":"active","cat":"event","tags":["소환"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 아주 강력한 식물을 소환 합니다.","rich":"[ §7SS+ Rank§f ]§f §e플라워\n\n§d쿨타임 : §e20§d초\n§7능력 : 아주 강력한 식물을 소환 합니다.","file":"설날/ability_new1.json","grp":1,"tier":1,"tierMax":3},{"id":"kr:ability_real_metor","name":"핵폭발급","rank":"SS+","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["군중제어","소환"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 자신을 기준으로 20칸 이내의 엔티티에게 아주 강력한 메테오를 소환하고 일정 시간 동안 속박합니다.","rich":"[ §7SS+ Rank§f ] 핵폭발급 \n\n§d쿨타임 : 25초\n§7능력 : 자신을 기준으로 20칸 이내의 엔티티에게 아주 강력한 메테오를 소환하고 일정 시간 동안 속박합니다.","file":"ability_ice_wizard - 복사본.json"},{"id":"kr:ability_white","name":"흰수염","rank":"SS+","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["고정 피해","투사체"],"awaken":false,"desc":"쿨타임 : 3초\n능력 : 고정 데미지 12 및 바라보는 방향으로 지진의 파동 발사","rich":"[ §7SS+ Rank§f ] 흰수염\n\n§d쿨타임 : 3초\n§7능력 : 고정 데미지 12 및 바라보는 방향으로 지진의 파동 발사","file":"ability_white.json"},{"id":"kr:ability_new3lock","name":"???","rank":"SS","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §dSS Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy 2.json"},{"id":"kr:ability_new4lock","name":"???","rank":"SS","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §dSS Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy 3.json"},{"id":"kr:ability_new7lock","name":"???","rank":"SS","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §dSS Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy 6.json"},{"id":"kr:ability_dark","name":"각성된 메테오","rank":"SS","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 하늘 위에 구름을 소환하여 운석을 떨어뜨린다.","rich":"[ §dSS Rank§f ] 각성된 메테오\n\n§d쿨타임 : 30초\n§7능력 : 하늘 위에 구름을 소환하여 운석을 떨어뜨린다.","file":"ability_dark.json"},{"id":"kr:ability_gon2","name":"공허 소환수 II","rank":"SS","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 자신만의 공허 소환수를 소환합니다.","rich":"[ §dSS Rank§f ] 공허 소환수 II\n\n§d쿨타임 : 30초\n§7능력 : 자신만의 공허 소환수를 소환합니다.","file":"ability_gon2.json"},{"id":"kr:ability_click1","name":"노력의 결실","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 클릭할 때 마다 자신의 쿨타임 1초 감소","rich":"[ §dSS Rank§f ] 노력의 결실\n\n§d쿨타임 : 없음\n§7능력 : 클릭할 때 마다 자신의 쿨타임 1초 감소","file":"ability_click.json"},{"id":"kr:ability_mot","name":"대못펀치","rank":"SS","cd":"7초","cds":7,"cdk":"active","cat":"core","tags":["투사체"],"awaken":false,"desc":"쿨타임 : 7초\n능력 : 땅 클릭 시, 토리코의 대못펀치를 발사한다.","rich":"[ §dSS Rank§f ] 대못펀치\n\n§d쿨타임 : 7초\n§7능력 : 땅 클릭 시, §b토리코§7의 대못펀치를 발사한다.","file":"ability_mot.json"},{"id":"kr:ability_new44","name":"대쉬","rank":"SS","cd":"2초","cds":2,"cdk":"active","cat":"event","tags":["이동·기동"],"awaken":false,"desc":"쿨타임 : 2초\n능력 : 바라보는 방향으로 짧게 도약 합니다.","rich":"[ §dSS Rank§f ]§f §e대쉬\n\n§d쿨타임 : §e2§d초\n§7능력 : 바라보는 방향으로 짧게 도약 합니다.","file":"설날/ability_new1 - 복사본 (3).json","grp":4,"tier":1,"tierMax":3},{"id":"kr:ability_new42","name":"대쉬","rank":"SS","cd":"1초","cds":1,"cdk":"active","cat":"event","tags":["이동·기동"],"awaken":false,"desc":"쿨타임 : 1초\n능력 : 바라보는 방향으로 짧게 도약 합니다.","rich":"[ §dSS Rank§f ]§f §e대쉬\n\n§d쿨타임 : §e1§d초\n§7능력 : 바라보는 방향으로 짧게 도약 합니다.","file":"설날/ability_new1 copy - 복사본 (3).json","grp":4,"tier":2,"tierMax":3},{"id":"kr:ability_new43","name":"대쉬","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"event","tags":["상시","이동·기동"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 바라보는 방향으로 짧게 도약 합니다.","rich":"[ §dSS Rank§f ]§f §e대쉬\n\n§d쿨타임 : §e없음\n§7능력 : 바라보는 방향으로 짧게 도약 합니다.","file":"설날/ability_new1 copy 2 - 복사본 (3).json","grp":4,"tier":3,"tierMax":3},{"id":"kr:ability_lock","name":"락","rank":"SS","cd":"120초","cds":120,"cdk":"active","cat":"core","tags":["쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 120초\n능력 : 타격한 플레이어에게 무한 쿨타임 부여","rich":"[ §dSS Rank§f ] 락\n\n§d쿨타임 : 120초\n§7능력 : 타격한 플레이어에게 무한 쿨타임 부여","file":"ability_lock.json"},{"id":"kr:ability_metal_hippo","name":"메탈 하마","rank":"SS","cd":"4초","cds":4,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 4초\n능력 : 땅 클릭 시 자신에게 즉시 재생 지급","rich":"[ §dSS Rank§f ] 메탈 하마\n\n§d쿨타임 : 4초\n§7능력 : 땅 클릭 시 자신에게 즉시 재생 지급","file":"ability_metal_hippo.json"},{"id":"kr:ability_mod","name":"모드","rank":"SS","cd":"6초","cds":6,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 6초\n능력 : 바라보는 방향으로 빨리 터지는 TNT 소환 { 사거리 : 16 }","rich":"[ §dSS Rank§f ] 모드\n\n§d쿨타임 : 6초\n§7능력 : 바라보는 방향으로 빨리 터지는 TNT 소환 { 사거리 : 16 }","file":"ability_mod.json"},{"id":"kr:ability_molwang","name":"몰락한 왕의 검","rank":"SS","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["군중제어","광역","생존·회복"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 주변 엔티티를 속박시키고 자신에게 저항 그리고 상대방에게 강한 데미지를 부여합니다.","rich":"[ §dSS Rank§f ] 몰락한 왕의 검\n\n§d쿨타임 : 30초\n§7능력 : 주변 엔티티를 속박시키고 자신에게 저항 그리고 상대방에게 강한 데미지를 부여합니다.","file":"ability_molwang.json"},{"id":"kr:ability_mihok","name":"미호크","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 신속 II + 고정 데미지 18","rich":"[ §dSS Rank§f ] 미호크\n\n§d쿨타임 : 없음\n§7능력 : 신속 II + 고정 데미지 18","file":"ability_mihok.json"},{"id":"kr:ability_hitbox","name":"발경","rank":"SS","cd":"120초","cds":120,"cdk":"active","cat":"core","tags":["광역","소환"],"awaken":false,"desc":"쿨타임 : 120초\n능력 : 땅 클릭 시, 강력한 에너지 구 소환하여 주변 엔티티 공격","rich":"[ §dSS Rank§f ] 발경\n\n§d쿨타임 : 120초\n§7능력 : 땅 클릭 시, 강력한 에너지 구 소환하여 주변 엔티티 공격","file":"ability_hitbox.json"},{"id":"kr:ability_hand","name":"방한 장갑","rank":"SS","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 땅 클릭 시, 15초 동안 크기 감소 + 저항 I + 이동 속도 증가","rich":"[ §dSS Rank§f ] 방한 장갑\n\n§d쿨타임 : 20초\n§7능력 : 땅 클릭 시, 15초 동안 크기 감소 + 저항 I + 이동 속도 증가","file":"ability_hand.json"},{"id":"kr:ability_buff","name":"버팔로","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","광역","이동·기동"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 이 능력으로 엔티티 죽일 시 자신을 기준으로 75칸 이내 엔티티들 중 가장 가까운 엔티티에게 순간이동","rich":"[ §dSS Rank§f ] 버팔로\n\n§d쿨타임 : 없음\n§7능력 : 이 능력으로 엔티티 죽일 시 자신을 기준으로 75칸 이내 엔티티들 중 가장 가까운 엔티티에게 순간이동","file":"ability_buff.json"},{"id":"kr:ability_invis0","name":"보이지 않는 공격 II","rank":"SS","cd":"8초","cds":8,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 8초\n능력 : 10칸 이내 엔티티에게 사용자의 힘 포션 효과에 따라 강력하고 보이지 않는 공격을 입힙니다.","rich":"[ §dSS Rank§f ] 보이지 않는 공격 II\n\n§d쿨타임 : 8초\n§7능력 : 10칸 이내 엔티티에게 사용자의 힘 포션 효과에 따라 강력하고 보이지 않는 공격을 입힙니다.","file":"ability_invis0.json"},{"id":"kr:ability_ash","name":"사기 저하","rank":"SS","cd":"10초","cds":10,"cdk":"active","cat":"core","tags":["광역","디버프"],"awaken":false,"desc":"쿨타임 : 10초\n능력 : 10칸 이내 엔티티들 중 자신에게 가까울수록 더 강한 방어력 감소 5초 를 부여합니다.","rich":"[ §dSS Rank§f ] 사기 저하\n\n§d쿨타임 : 10초\n§7능력 : 10칸 이내 엔티티들 중 자신에게 가까울수록 더 강한 §c방어력 감소§7 5초 를 부여합니다.","file":"ability_ash.json"},{"id":"kr:ability_boss","name":"사장님","rank":"SS","cd":"5분","cds":300,"cdk":"active","cat":"core","tags":["생존·회복","탈취·경제"],"awaken":false,"desc":"우클릭 · 버튼형 계약 메뉴\n대상 → 업무 → 정산율 → 기간을 차례로 선택합니다.\n계약자의 경험치 레벨 수익을 정산받고 사망 시 부활 비용 10레벨을 대신 냅니다.\n\n계약서 발송 쿨타임: 5분","rich":"[ §dSS Rank§f ] 사장님\n\n§d우클릭 · 버튼형 계약 메뉴\n§7대상 → 업무 → 정산율 → 기간을 차례로 선택합니다.\n§7계약자의 경험치 레벨 수익을 정산받고 사망 시 부활 비용 10레벨을 대신 냅니다.\n\n§e계약서 발송 쿨타임: 5분","file":"ability_boss.json"},{"id":"kr:ability_super_pickaxe","name":"슈퍼 곡괭이","rank":"SS","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["광역"],"awaken":false,"desc":"쿨타임 : 3초\n\n능력 : 클릭한 지점으로 5x5 광역 캐기","rich":"[ §dSS Rank§f ]§f 슈퍼 곡괭이\n\n§d쿨타임 : 3초\n\n§7능력 : 클릭한 지점으로 5x5 광역 캐기","file":"ability_super_pickaxe.json"},{"id":"kr:ability_cool2","name":"시공간 II","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손에 들고 있을 때 3칸 이내 플레이어 쿨타임 3초씩 증가","rich":"[ §dSS Rank§f ] 시공간 II\n\n§d쿨타임 : 없음\n§7능력 : 왼손에 들고 있을 때 3칸 이내 플레이어 쿨타임 §e3초§7씩 증가","file":"ability_cool2.json"},{"id":"kr:ability_push","name":"신라천정","rank":"SS","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 20칸 이내 엔티티에게 엔티티의 최대 체력 60퍼센트를 입힘","rich":"[ §dSS Rank§f ] 신라천정\n\n§d쿨타임 : 15초\n§7능력 : 20칸 이내 엔티티에게 엔티티의 최대 체력 60퍼센트를 입힘 ","file":"ability_push.json"},{"id":"kr:ability_new31","name":"외계인","rank":"SS","cd":"20초","cds":20,"cdk":"active","cat":"event","tags":["광역","이동·기동","디버프","탈취·경제"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 10칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","rich":"[ §dSS Rank§f ]§f §e외계인\n\n§d쿨타임 : §e20§d초\n§7능력 : 10칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","file":"설날/ability_new1 - 복사본 (2).json","grp":3,"tier":1,"tierMax":3},{"id":"kr:ability_new32","name":"외계인","rank":"SS","cd":"16초","cds":16,"cdk":"active","cat":"event","tags":["광역","이동·기동","디버프","탈취·경제"],"awaken":false,"desc":"쿨타임 : 16초\n능력 : 15칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","rich":"[ §dSS Rank§f ]§f §e외계인\n\n§d쿨타임 : §e16§d초\n§7능력 : 15칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","file":"설날/ability_new1 copy - 복사본 (2).json","grp":3,"tier":2,"tierMax":3},{"id":"kr:ability_new33","name":"외계인","rank":"SS","cd":"12초","cds":12,"cdk":"active","cat":"event","tags":["광역","이동·기동","디버프","탈취·경제"],"awaken":false,"desc":"쿨타임 : 12초\n능력 : 20칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","rich":"[ §dSS Rank§f ]§f §e외계인\n\n§d쿨타임 : §e12§d초\n§7능력 : 20칸 이내 가장 가까운 엔티티 1마리에게 10초 동안 표식 효과를 부여합니다. 표식 효과가 부여된 엔티티는 표식 한 사람이 웅크리기 했을 때 이 사람이 대상자에게 티피 되고 바로 효과가 소멸 됩니다.","file":"설날/ability_new1 copy 2 - 복사본 (2).json","grp":3,"tier":3,"tierMax":3},{"id":"kr:ability_knock2","name":"장풍 II","rank":"SS","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","rich":"[ §dSS Rank§f ] 장풍 II\n\n§d쿨타임 : 없음\n§7능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","file":"ability_knock - 복사본.json"},{"id":"kr:ability_kaig","name":"카이지","rank":"SS","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["즉사·처형","소환"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 27칸 이내의 엔티티에게 번개 소환 및 가까운 엔티티에게 즉사 I 5초 부여","rich":"[ §dSS Rank§f ] 카이지\n\n§d쿨타임 : 20초\n§7능력 : 27칸 이내의 엔티티에게 번개 소환 및 가까운 엔티티에게 즉사 I 5초 부여","file":"ability_kaig.json"},{"id":"kr:ability_crow","name":"크로우","rank":"SS","cd":"1초","cds":1,"cdk":"active","cat":"core","tags":["디버프","투사체"],"awaken":false,"desc":"쿨타임 : 1초\n능력 : 바라보는 방향으로 나이프 발사 < 방어력 감소 III >","rich":"[ §dSS Rank§f ] 크로우\n\n§d쿨타임 : 1초\n§7능력 : 바라보는 방향으로 나이프 발사 < 방어력 감소 III >","file":"ability_crow.json"},{"id":"kr:ability_tornado","name":"토네이도","rank":"SS","cd":"2초","cds":2,"cdk":"active","cat":"core","tags":["투사체"],"awaken":false,"desc":"쿨타임 : 2초\n능력 : 바라보는 방향으로 토네이도 발사","rich":"[ §dSS Rank§f ] 토네이도\n\n§d쿨타임 : 2초\n§7능력 : 바라보는 방향으로 토네이도 발사","file":"ability_tornado.json"},{"id":"kr:ability_new71","name":"파이퍼","rank":"SS","cd":"20초","cds":20,"cdk":"active","cat":"event","tags":["소환","버프"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 자신 주변에 곧 터지는 TNT 4개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","rich":"[ §dSS Rank§f ]§f §e파이퍼\n\n§d쿨타임 : §e20§d초\n§7능력 : 자신 주변에 곧 터지는 TNT 4개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","file":"설날/ability_new1 - 복사본 (6).json","grp":7,"tier":1,"tierMax":3},{"id":"kr:ability_new72","name":"파이퍼","rank":"SS","cd":"15초","cds":15,"cdk":"active","cat":"event","tags":["소환","버프"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 자신 주변에 곧 터지는 TNT 4개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","rich":"[ §dSS Rank§f ]§f §e파이퍼\n\n§d쿨타임 : §e15§d초\n§7능력 : 자신 주변에 곧 터지는 TNT 4개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","file":"설날/ability_new1 copy - 복사본 (6).json","grp":7,"tier":2,"tierMax":3},{"id":"kr:ability_new73","name":"파이퍼","rank":"SS","cd":"10초","cds":10,"cdk":"active","cat":"event","tags":["소환","버프"],"awaken":false,"desc":"쿨타임 : 10초\n능력 : 자신 주변에 곧 터지는 TNT 5개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","rich":"[ §dSS Rank§f ]§f §e파이퍼\n\n§d쿨타임 : §e10§d초\n§7능력 : 자신 주변에 곧 터지는 TNT 5개를 소환하고 자신에게 신속 5, 점프강화 50을 2초간 부여한다.","file":"설날/ability_new1 copy 2 - 복사본 (6).json","grp":7,"tier":3,"tierMax":3},{"id":"kr:ability_reincarnation","name":"환생","rank":"SS","cd":"패시브","cds":null,"cdk":"passive","cat":"core","tags":["패시브","생존·회복"],"awaken":false,"desc":"패시브\n사망한 자리에서 자신을 죽인 종족으로 3분간 부활합니다.\n환생 중 우클릭으로 종족 기술을 사용하며 플레이어 공격이 가능합니다.","rich":"[ §dSS Rank§f ] 환생\n\n§d패시브\n§7사망한 자리에서 자신을 죽인 종족으로 3분간 부활합니다.\n§7환생 중 우클릭으로 종족 기술을 사용하며 플레이어 공격이 가능합니다.","file":"ability_reincarnation.json"},{"id":"kr:ability_purple","name":"虚式 「茈」","rank":"SS","cd":"333초","cds":333,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 333초\n능력 : ‘구강(九綱)’. ‘편광(偏光)’. ‘까마귀와 성명(聲明)’. ‘표리의 틈새’.","rich":"[ §dSS Rank§f ] 虚式 「茈」\n\n§d쿨타임 : 333초\n§7능력 : §7‘구강(九綱)’. ‘편광(偏光)’. ‘까마귀와 성명(聲明)’. ‘표리의 틈새’.","file":"ability_purple.json"},{"id":"kr:ability_new5lock","name":"???","rank":"S","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §eS Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy 4.json"},{"id":"kr:ability_new6lock","name":"???","rank":"S","cd":"???","cds":null,"cdk":"unknown","cat":"locked","tags":[],"awaken":false,"desc":"쿨타임 : ???초\n능력 : ???","rich":"[ §eS Rank§f ]§f ???\n\n§d쿨타임 : ???초\n§7능력 : ???","file":"ability_ace - 복사본 copy 5.json"},{"id":"kr:ability_gon1","name":"공허 소환수 I","rank":"S","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 자신만의 공허 소환수를 소환합니다.","rich":"[ §eS Rank§f ] 공허 소환수 I\n\n§d쿨타임 : 30초\n§7능력 : 자신만의 공허 소환수를 소환합니다.","file":"ability_gon1.json"},{"id":"kr:ability_death_note_1","name":"데스노트","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","즉사·처형"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 능력 사용 시, 플레이어 기준 15칸 이내의 가장 가까운 엔티티 강제 암살","rich":"[ §eS Rank§f ] 데스노트\n\n§d쿨타임 : 없음\n§7능력 : 능력 사용 시, 플레이어 기준 15칸 이내의 가장 가까운 엔티티 강제 암살","file":"ability_click - 복사본.json"},{"id":"kr:ability_monster","name":"돌연변이","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","생존·회복"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 무한으로 재생 2 부여","rich":"[ §eS Rank§f ] 돌연변이\n\n§d쿨타임 : 없음\n§7능력 : 무한으로 재생 2 부여","file":"ability_monster.json"},{"id":"kr:ability_metor","name":"메테오","rank":"S","cd":"12초","cds":12,"cdk":"active","cat":"core","tags":["군중제어","소환"],"awaken":false,"desc":"쿨타임 : 12초\n능력 : 7칸 이내의 엔티티에게 떨어져 오는 TNT 소환 및 수면 II 5초 부여","rich":"[ §eS Rank§f ] 메테오\n\n§d쿨타임 : 12초\n§7능력 : 7칸 이내의 엔티티에게 떨어져 오는 TNT 소환 및 §b수면 II 5초§7 부여","file":"ability_metor.json"},{"id":"kr:ability_vex1","name":"벡스","rank":"S","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["생존·회복","각성 대응"],"awaken":true,"desc":"쿨타임 : 3초\n능력 : 3초 동안 보호막 16을 추가적으로 획득 합니다.\n\n\n< 각성 후 >\n\n쿨타임 : 없음\n능력 : 아이템을 왼손에 들고 있을 시, 3초 동안 첫 타격을 맞을 때 마다 보호막 16을 획득합니다.","rich":"[ §eS Rank§f ] 벡스\n\n§d쿨타임 : 3초\n§7능력 : 3초 동안 보호막 16을 추가적으로 획득 합니다.\n\n\n§r< §b각성 후§r >\n\n§d쿨타임 : 없음\n§7능력 : 아이템을 왼손에 들고 있을 시, 3초 동안 첫 타격을 맞을 때 마다 보호막 16을 획득합니다.","file":"ability_vex.json"},{"id":"kr:ability_vex_up","name":"벡스 각성 확인서","rank":"S","cd":"—","cds":null,"cdk":"none","cat":"awaken","tags":[],"awaken":false,"desc":"땅 클릭 시 이 아이템은 사라지며, 앞으로 벡스 능력이 영구적으로 각성됩니다.","rich":"[ §eS Rank§f ] 벡스 §b각성 확인서\n\n§d땅 클릭 시 이 아이템은 사라지며, 앞으로 벡스 능력이 영구적으로 각성됩니다.","file":"ability_poor_up - 복사본 - 복사본.json"},{"id":"kr:ability_invis1","name":"보이지 않는 공격","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 클릭할 때 마다 힘 포션 효과에 따라 5칸 이내 엔티티에게 2 x 계수 데미지를 부여합니다.","rich":"[ §eS Rank§f ] 보이지 않는 공격\n\n§d쿨타임 : 없음\n§7능력 : 클릭할 때 마다 힘 포션 효과에 따라 5칸 이내 엔티티에게 2 x 계수 데미지를 부여합니다.","file":"ability_invis1.json"},{"id":"kr:ability_blaze","name":"블레이즈","rank":"S","cd":"4초","cds":4,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 4초\n능력 : 나를 기준으로 18칸 이내의 가장 가까이 있는 3명의 플레이어에게 불 구덩이 소환","rich":"[ §eS Rank§f ] 블레이즈\n\n§d쿨타임 : 4초\n§7능력 : 나를 기준으로 18칸 이내의 가장 가까이 있는 3명의 플레이어에게 불 구덩이 소환","file":"ability_blaze.json"},{"id":"kr:ability_new51","name":"빙하기","rank":"S","cd":"12초","cds":12,"cdk":"active","cat":"event","tags":[],"awaken":false,"desc":"쿨타임 : 12초\n능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","rich":"[ §eS Rank§f ]§f §e빙하기\n\n§d쿨타임 : §e12§d초\n§7능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","file":"설날/ability_new1 - 복사본 (4).json","grp":5,"tier":1,"tierMax":3},{"id":"kr:ability_new52","name":"빙하기","rank":"S","cd":"9초","cds":9,"cdk":"active","cat":"event","tags":[],"awaken":false,"desc":"쿨타임 : 9초\n능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","rich":"[ §eS Rank§f ]§f §e빙하기\n\n§d쿨타임 : §e9§d초\n§7능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","file":"설날/ability_new1 copy - 복사본 (4).json","grp":5,"tier":2,"tierMax":3},{"id":"kr:ability_new53","name":"빙하기","rank":"S","cd":"6초","cds":6,"cdk":"active","cat":"event","tags":[],"awaken":false,"desc":"쿨타임 : 6초\n능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","rich":"[ §eS Rank§f ]§f §e빙하기\n\n§d쿨타임 : §e6§d초\n§7능력 : 바라보는 방향으로 얼음 기둥 생성을 생성 합니다.","file":"설날/ability_new1 copy 2 - 복사본 (4).json","grp":5,"tier":3,"tierMax":3},{"id":"kr:ability_eye1","name":"사륜안","rank":"S","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["군중제어","소환","디버프","각성 대응"],"awaken":true,"desc":"쿨타임 : 15초\n능력 : 50칸 이내의 플레이어에게 수면 IV 10초 및 구속 5초를 입히고 떨어지는 모루 소환\n\n\n< 각성 후 >\n\n쿨타임 : 7초\n능력 : 70칸 이내의 플레이어에게 표식 IV 10초 및 구속 10초를 입히고 떨어지는 모루 소환","rich":"[ §eS Rank§f ] 사륜안\n\n§d쿨타임 : 15초\n§7능력 : 50칸 이내의 플레이어에게 §b수면 IV 10초§7 및 구속 5초를 입히고 떨어지는 모루 소환\n\n\n§r< §b각성 후§r >\n\n§d쿨타임 : §b7초§7\n§7능력 : §b70칸§7 이내의 플레이어에게 §b표식 IV 10초§7 및 구속 §b10초§7를 입히고 떨어지는 모루 소환","file":"ability_eye1.json"},{"id":"kr:ability_eye1_up","name":"사륜안 각성 확인서","rank":"S","cd":"—","cds":null,"cdk":"none","cat":"awaken","tags":[],"awaken":false,"desc":"땅 클릭 시 이 아이템은 사라지며, 앞으로 거지 능력이 영구적으로 각성됩니다.","rich":"[ §eS Rank§f ] 사륜안 §b각성 확인서\n\n§d땅 클릭 시 이 아이템은 사라지며, 앞으로 거지 능력이 영구적으로 각성됩니다.","file":"ability_poor_up - 복사본.json"},{"id":"kr:ability_seoul","name":"서울 구경","rank":"S","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 10칸 이내의 엔티티를 아주 높게 띄워 올립니다.","rich":"[ §eS Rank§f ] 서울 구경\n\n§d쿨타임 : 60초\n§7능력 : 10칸 이내의 엔티티를 아주 높게 띄워 올립니다.","file":"ability_seoul.json"},{"id":"kr:ability_cool1","name":"시공간 I","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손에 들고 있을 때 2칸 이내 플레이어 쿨타임 1초씩 증가","rich":"[ §eS Rank§f ] 시공간 I\n\n§d쿨타임 : 없음\n§7능력 : 왼손에 들고 있을 때 2칸 이내 플레이어 쿨타임 1초씩 증가","file":"ability_cool1.json"},{"id":"kr:ability_shindra","name":"신드라","rank":"S","cd":"5초","cds":5,"cdk":"active","cat":"core","tags":["투사체"],"awaken":false,"desc":"쿨타임 : 5초\n능력 : 바라보는 방향으로 어둠의 에너지를 발사합니다.\n\n< 스택 > : 플레이어를 제외한 엔티티 처치를 15회 기여할 때 마다 영구적으로 피해량 1씩 상승 ( 기본 피해량 : 10 )","rich":"[ §eS Rank§f ] 신드라\n\n§d쿨타임 : 5초\n§7능력 : 바라보는 방향으로 어둠의 에너지를 발사합니다.\n\n< §c스택§7 > : 플레이어를 제외한 엔티티 처치를 §e15§7회 기여할 때 마다 영구적으로 피해량 1씩 상승 ( 기본 피해량 : 10 )","file":"ability_shindra.json"},{"id":"kr:ability_bandit","name":"약탈자","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","탈취·경제"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 가장 가까운 플레이어 인벤토리 내 D ~ S Rank 등급 능력들을 전부 소멸시키고 자신에게 능력 뽑기 상자 x 1 지급","rich":"[ §eS Rank§f ] 약탈자\n\n§d쿨타임 : 없음\n§7능력 : 가장 가까운 플레이어 인벤토리 내 D ~ S Rank 등급 능력들을 전부 소멸시키고 자신에게 능력 뽑기 상자 x 1 지급","file":"ability_bandit.json"},{"id":"kr:ability_new61","name":"약화된 토네이도","rank":"S","cd":"35초","cds":35,"cdk":"active","cat":"event","tags":["군중제어","광역","디버프"],"awaken":false,"desc":"쿨타임 : 35초\n능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","rich":"[ §eS Rank§f ]§f §e약화된 토네이도\n\n§d쿨타임 : §e35§d초\n§7능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","file":"설날/ability_new1 - 복사본 (5).json","grp":6,"tier":1,"tierMax":3},{"id":"kr:ability_new62","name":"약화된 토네이도","rank":"S","cd":"30초","cds":30,"cdk":"active","cat":"event","tags":["군중제어","광역","디버프"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","rich":"[ §eS Rank§f ]§f §e약화된 토네이도\n\n§d쿨타임 : §e30§d초\n§7능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","file":"설날/ability_new1 copy - 복사본 (5).json","grp":6,"tier":2,"tierMax":3},{"id":"kr:ability_new63","name":"약화된 토네이도","rank":"S","cd":"25초","cds":25,"cdk":"active","cat":"event","tags":["군중제어","광역","디버프"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","rich":"[ §eS Rank§f ]§f §e약화된 토네이도\n\n§d쿨타임 : §e25§d초\n§7능력 : 바라보는 방향으로 토네이도를 설치하여 주변 엔티티를 속박 합니다","file":"설날/ability_new1 copy 2 - 복사본 (5).json","grp":6,"tier":3,"tierMax":3},{"id":"kr:ability_ork","name":"오크","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","군중제어","생존·회복"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손에 들고있을 때, 추가 체력 150 증가 및 구속 부여","rich":"[ §eS Rank§f ] 오크\n\n§d쿨타임 : 없음\n§7능력 : 왼손에 들고있을 때, 추가 체력 150 증가 및 구속 부여","file":"ability_ork.json"},{"id":"kr:ability_dragon","name":"용","rank":"S","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["군중제어","쿨타임 조작"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 20칸 이내의 엔티티에게 수면 III 및 쿨타임 효과를 12초 부여","rich":"[ §eS Rank§f ] 용\n\n§d쿨타임 : 15초\n§7능력 : 20칸 이내의 엔티티에게 §b수면 III§7 및 쿨타임 효과를 12초 부여","file":"ability_dragon.json"},{"id":"kr:ability_last_will","name":"유언","rank":"S","cd":"패시브","cds":null,"cdk":"passive","cat":"core","tags":["패시브"],"awaken":false,"desc":"패시브\n전투 중 사망하면 최근 30초간 자신이 입힌 총 피해를 자신을 죽인 대상에게 한 번에 되돌립니다.","rich":"[ §eS Rank§f ] 유언\n\n§d패시브\n§7전투 중 사망하면 최근 30초간 자신이 입힌 총 피해를 자신을 죽인 대상에게 한 번에 되돌립니다.","file":"ability_last_will.json"},{"id":"kr:ability_knock1","name":"장풍 I","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","rich":"[ §eS Rank§f ] 장풍 I\n\n§d쿨타임 : 없음\n§7능력 : 타격 시, 상대방을 멀리 밀쳐냅니다.","file":"ability_knock.json"},{"id":"kr:ability_zenos","name":"제노스","rank":"S","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["광역","소환"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 40칸 이내의 가장 가까운 플레이어 5명에게 번개 소환","rich":"[ §eS Rank§f ] 제노스\n\n§d쿨타임 : 15초\n§7능력 : 40칸 이내의 가장 가까운 플레이어 5명에게 번개 소환","file":"ability_zenos.json"},{"id":"kr:ability_jet","name":"제트","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 신속 IV 부여","rich":"[ §eS Rank§f ] 제트\n\n§d쿨타임 : 없음\n§7능력 : 신속 IV 부여","file":"ability_jet.json"},{"id":"kr:ability_zoro","name":"조로","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 신속 I + 고정 데미지 12","rich":"[ §eS Rank§f ] 조로\n\n§d쿨타임 : 없음\n§7능력 : 신속 I + 고정 데미지 12","file":"ability_zoro.json"},{"id":"kr:ability_iron_shark","name":"철갑 상어","rank":"S","cd":"40초","cds":40,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 40초\n능력 : 능력 사용 시 자신에게 저항 III 20초 부여","rich":"[ §eS Rank§f ] 철갑 상어\n\n§d쿨타임 : 40초\n§7능력 : 능력 사용 시 자신에게 저항 III 20초 부여","file":"ability_iron_shark.json"},{"id":"kr:ability_kamui","name":"카무이","rank":"S","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 7초간 모든 물리적 공격에서 제외","rich":"[ §eS Rank§f ] 카무이\n\n§d쿨타임 : 15초\n§7능력 : 7초간 §e모든 물리적 공격§7에서 제외","file":"ability_kamui.json"},{"id":"kr:ability_kuma","name":"쿠마","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 가시 III 및 보호 IV 효과 부여된 네더라이트 모자 지급","rich":"[ §eS Rank§f ] 쿠마\n\n§d쿨타임 : 없음\n§7능력 : 가시 III 및 보호 IV 효과 부여된 네더라이트 모자 지급","file":"ability_kuma.json"},{"id":"kr:ability_klocking","name":"클로킹","rank":"S","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["즉사·처형","광역","생존·회복","버프"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 투명화 및 즉시 회복 효과를 10초간 부여 + 10칸 이내 엔티티 2명에게 즉사 I 10초 부여","rich":"[ §eS Rank§f ] 클로킹\n\n§d쿨타임 : 30초\n§7능력 : 투명화 및 즉시 회복 효과를 10초간 부여 + 10칸 이내 엔티티 2명에게 §c즉사 I§7 10초 부여","file":"ability_klocking.json"},{"id":"kr:ability_kizaru","name":"키자루","rank":"S","cd":"10초","cds":10,"cdk":"active","cat":"core","tags":["광역","이동·기동","디버프"],"awaken":false,"desc":"쿨타임 : 10초\n능력 : 바라보는 방향으로 21칸 돌진 , 돌진 할 때 주위의 엔티티들에게 위더 3초 부여","rich":"[ §eS Rank§f ] 키자루\n\n§d쿨타임 : 10초\n§7능력 : 바라보는 방향으로 21칸 돌진 , 돌진 할 때 주위의 엔티티들에게 위더 3초 부여","file":"ability_kizaru.json"},{"id":"kr:ability_pedon","name":"패도멸악권","rank":"S","cd":"120초","cds":120,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 120초\n능력 : 상대방을 공격할 시 체력 5로 변경 [ 3회용 ]","rich":"[ §eS Rank§f ] 패도멸악권\n\n§d쿨타임 : 120초\n§7능력 : 상대방을 공격할 시 체력 5로 변경 [ 3회용 ]","file":"ability_pedon.json"},{"id":"kr:ability_pet","name":"펫","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 토우지를 길들일 수 있다고..?","rich":"[ §eS Rank§f ] 펫\n\n§d쿨타임 : 없음\n§7능력 : §b토우지§7를 길들일 수 있다고..?","file":"ability_pet.json"},{"id":"kr:ability_fortune1","name":"행운은 용감한 자의 편","rank":"S","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 이 능력의 개수당 상대방을 때릴 때 마다 추가 피해 1을 입힙니다.","rich":"[ §eS Rank§f ] 행운은 용감한 자의 편\n\n§d쿨타임 : 없음\n§7능력 : 이 능력의 개수당 상대방을 때릴 때 마다 추가 피해 1을 입힙니다.","file":"ability_fortune.json"},{"id":"kr:ability_sand","name":"가아라","rank":"A","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["소환","버프"],"awaken":false,"desc":"쿨타임 : 25초\n능력 : 13칸 이내의 엔티티에게 3x3 모래 소환 및 자신에게 상태 면역 3초 부여","rich":"[ §4A Rank§f ] 가아라\n\n§d쿨타임 : 25초\n§7능력 : 13칸 이내의 엔티티에게 3x3 모래 소환 및 자신에게 §b상태 면역§7 3초 부여","file":"ability_sand.json"},{"id":"kr:ability_knight","name":"광전사","rank":"A","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 힘 II 효과 부여","rich":"[ §4A Rank§f ] 광전사\n\n§d쿨타임 : 없음\n§7능력 : 힘 II 효과 부여","file":"ability_knight.json"},{"id":"kr:ability_debtor","name":"빚쟁이","rank":"A","cd":"자동 발동","cds":null,"cdk":"passive","cat":"core","tags":["패시브","즉사·처형"],"awaken":false,"desc":"발동 조건\n주손 또는 왼손 장착 중 치명 피해를 받을 때 자동 발동\n\n죽음 유예 · 30초\n체력은 1로 유지되고 초과 피해가 빚이 됩니다.\n유예 중 추가로 받은 피해도 빚에 더해집니다.\n빚 한도는 50입니다.\n\n상환 방법\n플레이어가 아닌 몹 1마리 처치마다 빚 10 상환\n빚이 0이 되면 즉시 정상 상태로 복귀\n\n실패 조건\n30초 만료 또는 빚이 50을 초과하면 즉사\n방어구·내구도 장비 중 무작위 1개가 영구 삭제\n\n우클릭하면 상세 설명을 확인합니다.","rich":"[ §4A Rank§f ] 빚쟁이\n\n§d발동 조건\n§7주손 또는 왼손 장착 중 치명 피해를 받을 때 자동 발동\n\n§d죽음 유예 · 30초\n§7체력은 1로 유지되고 초과 피해가 §c빚§7이 됩니다.\n§7유예 중 추가로 받은 피해도 빚에 더해집니다.\n§7빚 한도는 §c50§7입니다.\n\n§d상환 방법\n§7플레이어가 아닌 몹 1마리 처치마다 빚 §a10 상환\n§7빚이 0이 되면 즉시 정상 상태로 복귀\n\n§d실패 조건\n§730초 만료 또는 빚이 50을 초과하면 즉사\n§7방어구·내구도 장비 중 무작위 1개가 영구 삭제\n\n§e우클릭하면 상세 설명을 확인합니다.","file":"ability_debtor.json"},{"id":"kr:ability_sasin","name":"사신","rank":"A","cd":"10초","cds":10,"cdk":"active","cat":"core","tags":["생존·회복","디버프"],"awaken":false,"desc":"쿨타임 : 10초\n능력 : 가장 가까운 7칸 이내의 엔티티에게 위더 4초 , 자신에게 즉시 회복 부여","rich":"[ §4A Rank§f ] 사신\n\n§d쿨타임 : 10초\n§7능력 : 가장 가까운 7칸 이내의 엔티티에게 위더 4초 , 자신에게 즉시 회복 부여","file":"ability_sasin.json"},{"id":"kr:ability_rumor","name":"소문","rank":"A","cd":"10분","cds":600,"cdk":"passive-cd","cat":"core","tags":["패시브","탈취·경제"],"awaken":false,"desc":"패시브\n몹을 처치하면 서버 전체에 소문이 퍼집니다.\n해당 몹은 24시간 동안 20% 강해지고 이번 처치 드랍은 3배가 됩니다.\n\n재사용 대기시간: 10분","rich":"[ §4A Rank§f ] 소문\n\n§d패시브\n§7몹을 처치하면 서버 전체에 소문이 퍼집니다.\n§7해당 몹은 24시간 동안 20% 강해지고 이번 처치 드랍은 3배가 됩니다.\n\n§e재사용 대기시간: 10분","file":"ability_rumor.json"},{"id":"kr:ability_summoning","name":"소환수","rank":"A","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["광역","소환","카운터"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 나를 기준으로 10칸 이내의 가장 가까운 플레이어 3명에게 허스크 2마리씩 소환 및 자신에게 피해 반사 III 5초 부여","rich":"[ §4A Rank§f ] 소환수\n\n§d쿨타임 : 15초\n§7능력 : 나를 기준으로 10칸 이내의 가장 가까운 플레이어 3명에게 허스크 2마리씩 소환 및 자신에게 §e피해 반사 III 5초§7 부여","file":"ability_summoning.json"},{"id":"kr:ability_liquor","name":"술꾼","rank":"A","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["디버프"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 25칸 이내의 엔티티를 멀미 20초 및 방어력 감소 III 10초 부여","rich":"[ §4A Rank§f ] 술꾼\n\n§d쿨타임 : 30초\n§7능력 : 25칸 이내의 엔티티를 멀미 20초 및 §c방어력 감소 III§7 10초 부여","file":"ability_liquor.json"},{"id":"kr:ability_stans","name":"스탠스","rank":"A","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","카운터"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 왼손 장착 시, 넉백 무시","rich":"[ §cA Rank§f ] 스탠스\n\n§d쿨타임 : 없음\n§7능력 : 왼손 장착 시, 넉백 무시","file":"ability_stans.json"},{"id":"kr:ability_ares","name":"아레스","rank":"A","cd":"40초","cds":40,"cdk":"active","cat":"core","tags":["군중제어"],"awaken":false,"desc":"쿨타임 : 40초\n능력 : 15칸 이내의 엔티티를 마그마 블록으로 가두고 구속 III 10초 부여","rich":"[ §4A Rank§f ] 아레스\n\n§d쿨타임 : 40초\n§7능력 : 15칸 이내의 엔티티를 마그마 블록으로 가두고 구속 III 10초 부여","file":"ability_ares.json"},{"id":"kr:ability_aprodite","name":"아프로디테","rank":"A","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["이동·기동","디버프","각성 대응"],"awaken":true,"desc":"쿨타임 : 15초\n능력 : 나를 기준으로 10칸 이내의 가까운 플레이어에게 이동 되고 상대방은 내가 있던 곳으로 이동\n\n\n< 각성 후 >\n\n쿨타임 : 20초\n능력 : 나를 기준으로 70칸 이내의 가까운 플레이어에게 이동 되고 상대방은 내가 있던 곳으로 이동하고 상대방에게 즉시 피해 II 1초 및 빗나감 V 15초 부여","rich":"[ §4A Rank§f ] 아프로디테\n\n§d쿨타임 : 15초\n§7능력 : 나를 기준으로 10칸 이내의 가까운 플레이어에게 이동 되고 상대방은 내가 있던 곳으로 이동\n\n\n§r< §b각성 후§r >\n\n§d쿨타임 : 20초\n§7능력 : 나를 기준으로 §b70§7칸 이내의 가까운 플레이어에게 이동 되고 상대방은 내가 있던 곳으로 이동하고 상대방에게 §b즉시 피해 II 1초§7 및 §b빗나감 V 15초§7 부여","file":"ability_aprodite.json"},{"id":"kr:ability_aprodite_up","name":"아프로디테 각성 확인서","rank":"A","cd":"—","cds":null,"cdk":"none","cat":"awaken","tags":[],"awaken":false,"desc":"땅 클릭 시 이 아이템은 사라지며, 앞으로 아프로디테 능력이 영구적으로 각성됩니다.","rich":"[ §4A Rank§f ] 아프로디테 §b각성 확인서\n\n§d땅 클릭 시 이 아이템은 사라지며, 앞으로 아프로디테 능력이 영구적으로 각성됩니다.","file":"ability_aprodite_up.json"},{"id":"kr:ability_ace","name":"에이스","rank":"A","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 바라보는 방향으로 용암 설치","rich":"[ §4A Rank§f ]§f 에이스\n\n§d쿨타임 : 15초\n§7능력 : 바라보는 방향으로 용암 설치","file":"ability_ace.json"},{"id":"kr:ability_ejis","name":"이지스","rank":"A","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["생존·회복","카운터"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 자신의 체력 회복하고 피해 반사 15초 부여","rich":"[ §4A Rank§f ] 이지스\n\n§d쿨타임 : 30초\n§7능력 : 자신의 체력 회복하고 §e피해 반사 15초§7 부여","file":"ability_ejis.json"},{"id":"kr:ability_earthquake","name":"지진","rank":"A","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["쿨타임 조작","광역","소환"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 20칸 이내의 가장 가까운 엔티티 2명에게 3x3x10 구덩이 소환 및 없어지지 않는 쿨타임 부여","rich":"[ §4A Rank§f ] 지진\n\n§d쿨타임 : 30초\n§7능력 : 20칸 이내의 가장 가까운 엔티티 2명에게 3x3x10 구덩이 소환 및 없어지지 않는 쿨타임 부여","file":"ability_earthquake.json"},{"id":"kr:ability_power","name":"패기","rank":"A","cd":"3초","cds":3,"cdk":"active","cat":"core","tags":["소환","디버프"],"awaken":false,"desc":"쿨타임 : 3초\n능력 : 23칸 이내의 엔티티에게 피해 약화 2초 및 약탈자의 송곳니를 소환","rich":"[ §4A Rank§f ] 패기\n\n§d쿨타임 : 3초\n§7능력 : 23칸 이내의 엔티티에게 피해 약화 2초 및 약탈자의 송곳니를 소환","file":"ability_power.json"},{"id":"kr:ability_hades","name":"하데스","rank":"A","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 17칸 이내의 엔티티를 나의 밑으로 이동","rich":"[ §4A Rank§f ] 하데스\n\n§d쿨타임 : 15초\n§7능력 : 17칸 이내의 엔티티를 나의 밑으로 이동","file":"ability_hades.json"},{"id":"kr:ability_healer","name":"힐러","rank":"A","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["생존·회복"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 재생 2초 부여","rich":"[ §4A Rank§f ] 힐러\n\n§d쿨타임 : 15초\n§7능력 : 재생 2초 부여","file":"ability_healer.json"},{"id":"kr:ability_kangsi","name":"강시","rank":"B","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","군중제어","버프"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 구속 2 , 점프 강화 2","rich":"[ §2B Rank§f ] 강시\n\n§d쿨타임 : 없음\n§7능력 : 구속 2 , 점프 강화 2","file":"ability_kangsi.json"},{"id":"kr:ability_poor","name":"거지","rank":"B","cd":"25초","cds":25,"cdk":"active","cat":"core","tags":["생존·회복","버프","디버프","각성 대응"],"awaken":true,"desc":"쿨타임 : 25초\n능력 : 7칸 이내의 플레이어에게 배고픔 효과 10초 부여 , 나에게 포화 효과 10초 및 상태 면역 2초 부여\n\n\n< 각성 후 >\n\n쿨타임 : 35초\n능력 : 15칸 이내의 플레이어에게 죽을 때 까지 유지 되는 배고픔 효과 부여 , 나에게 포화 효과 및 상태 면역 및 흡혈 III 20초 부여","rich":"[ §2B Rank§f ] 거지\n\n§d쿨타임 : 25초\n§7능력 : 7칸 이내의 플레이어에게 배고픔 효과 10초 부여 , 나에게 포화 효과 10초 및 §b상태 면역 2초§7 부여\n\n\n§r< §b각성 후§r >\n\n§d쿨타임 : 35초\n§7능력 : §b15§7칸 이내의 플레이어에게 §b죽을 때 까지 유지 되는§7 배고픔 효과 부여 , 나에게 포화 효과 및 §b상태 면역§7 및 §c흡혈 III§r §b20초§7 부여","file":"ability_poor.json"},{"id":"kr:ability_poor_up","name":"거지 각성 확인서","rank":"B","cd":"—","cds":null,"cdk":"none","cat":"awaken","tags":[],"awaken":false,"desc":"땅 클릭 시 이 아이템은 사라지며, 앞으로 거지 능력이 영구적으로 각성됩니다.","rich":"[ §aB Rank§f ] 거지 §b각성 확인서\n\n§d땅 클릭 시 이 아이템은 사라지며, 앞으로 거지 능력이 영구적으로 각성됩니다.","file":"ability_poor_up.json"},{"id":"kr:ability_golem","name":"골렘","rank":"B","cd":"10초","cds":10,"cdk":"active","cat":"core","tags":[],"awaken":false,"desc":"쿨타임 : 10초\n능력 : 가까이 있는 엔티티를 띄어올림","rich":"[ §2B Rank§f ] 골렘\n\n§d쿨타임 : 10초\n§7능력 : 가까이 있는 엔티티를 띄어올림","file":"ability_golem.json"},{"id":"kr:ability_ninja","name":"닌자","rank":"B","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 속도 3 점프 강화 3 부여","rich":"[ §2B Rank§f ] 닌자\n\n§d쿨타임 : 없음\n§7능력 : 속도 3 점프 강화 3 부여","file":"ability_ninja.json"},{"id":"kr:ability_witch","name":"마녀","rank":"B","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["디버프"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 9칸 이내의 엔티티를 독 5초간 부여","rich":"[ §2B Rank§f ] 마녀\n\n§d쿨타임 : 30초\n§7능력 : 9칸 이내의 엔티티를 독 5초간 부여","file":"ability_witch.json"},{"id":"kr:ability_nuisance","name":"민폐","rank":"B","cd":"패시브","cds":null,"cdk":"passive","cat":"core","tags":["패시브","광역","카운터"],"awaken":false,"desc":"패시브\n받는 피해가 절반으로 감소합니다.\n감소 전 피해의 30%가 반경 15블록 내 같은 길드원 각각에게 전달됩니다.","rich":"[ §2B Rank§f ] 민폐\n\n§d패시브\n§7받는 피해가 절반으로 감소합니다.\n§7감소 전 피해의 30%가 반경 15블록 내 같은 길드원 각각에게 전달됩니다.","file":"ability_nuisance.json"},{"id":"kr:ability_freeze","name":"봉인","rank":"B","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["군중제어","광역"],"awaken":false,"desc":"쿨타임 : 60초\n능력 : 7칸 이내의 모든 엔티티에게 구속 과 쿨타임을 15초 늘림","rich":"[ §2B Rank§f ] 봉인\n\n§d쿨타임 : 60초\n§7능력 : 7칸 이내의 모든 엔티티에게 구속 과 쿨타임을 15초 늘림","file":"ability_freeze.json"},{"id":"kr:ability_drag","name":"블리츠크랭크","rank":"B","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["이동·기동","디버프"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 20칸 이내의 엔티티를 자신으로 티피 하고 상대방에게 방어력 감소 III 5초 부여","rich":"[ §2B Rank§f ] 블리츠크랭크\n\n§d쿨타임 : 20초\n§7능력 : 20칸 이내의 엔티티를 자신으로 티피 하고 상대방에게 방어력 감소 III 5초 부여","file":"ability_drag.json"},{"id":"kr:ability_ant","name":"앤트맨","rank":"B","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 크기 축소 + 데미지 8","rich":"[ §2B Rank§f ] 앤트맨\n\n§d쿨타임 : 없음\n§7능력 : 크기 축소 + 데미지 8","file":"ability_ant.json"},{"id":"kr:ability_squid","name":"오징어","rank":"B","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["군중제어"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 8칸 이내의 엔티티에게 실명 10초 부여","rich":"[ §2B Rank§f ] 오징어\n\n§d쿨타임 : 20초\n§7능력 : 8칸 이내의 엔티티에게 실명 10초 부여","file":"ability_squid.json"},{"id":"kr:ability_teleporter","name":"텔레포터","rank":"B","cd":"35초","cds":35,"cdk":"active","cat":"core","tags":["이동·기동"],"awaken":false,"desc":"쿨타임 : 35초\n능력 : 나를 기준으로 35칸 이내의 가까이 있는 플레이어에게 이동","rich":"[ §2B Rank§f ] 텔레포터\n\n§d쿨타임 : 35초\n§7능력 : 나를 기준으로 35칸 이내의 가까이 있는 플레이어에게 이동","file":"ability_teleporter.json"},{"id":"kr:ability_faster","name":"패스터","rank":"B","cd":"15초","cds":15,"cdk":"active","cat":"core","tags":["군중제어","소환"],"awaken":false,"desc":"쿨타임 : 15초\n능력 : 20칸 이내의 엔티티에게 거미줄 소환 및 수면 II 8초 부여","rich":"[ §2B Rank§f ] 패스터\n\n§d쿨타임 : 15초\n§7능력 : 20칸 이내의 엔티티에게 거미줄 소환 및 §b수면 II 8초§7 부여","file":"ability_faster.json"},{"id":"kr:ability_cp9","name":"CP9","rank":"B","cd":"40초","cds":40,"cdk":"active","cat":"core","tags":["소환"],"awaken":false,"desc":"쿨타임 : 40초\n능력 : 바라보는 방향으로 9칸 TNT 소환","rich":"[ §2B Rank§f ] CP9\n\n§d쿨타임 : 40초\n§7능력 : 바라보는 방향으로 9칸 TNT 소환","file":"ability_cp9.json"},{"id":"kr:ability_rabbit","name":"산토끼","rank":"C","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시","버프","고정 피해"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 점프 강화 5 부여 + 고정 데미지 5","rich":"[ C Rank§f ] 산토끼\n\n§d쿨타임 : 없음\n§7능력 : 점프 강화 5 부여 + 고정 데미지 5","file":"ability_rabbit.json"},{"id":"kr:ability_slower","name":"슬로워","rank":"C","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["군중제어"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 나를 기준으로 가장 가까이 있는 플레이어에게 구속 5초 부여 , 나에게 느린 낙하 5초 부여","rich":"[ C Rank§f ] 슬로워\n\n§d쿨타임 : 20초\n§7능력 : 나를 기준으로 가장 가까이 있는 플레이어에게 구속 5초 부여 , 나에게 느린 낙하 5초 부여","file":"ability_slower.json"},{"id":"kr:ability_health","name":"증식자","rank":"C","cd":"20초","cds":20,"cdk":"active","cat":"core","tags":["즉사·처형","광역","생존·회복"],"awaken":false,"desc":"쿨타임 : 20초\n능력 : 재생 3초 부여 및 10칸 이내 가까운 엔티티 1명에게 즉사 I 5초 부여","rich":"[§f C Rank§f ] 증식자\n\n§d쿨타임 : 20초\n§7능력 : 재생 3초 부여 및 10칸 이내 가까운 엔티티 1명에게 §c즉사 I 5초§7 부여","file":"ability_health.json"},{"id":"kr:ability_water_king","name":"포세이돈","rank":"C","cd":"60초","cds":60,"cdk":"active","cat":"core","tags":["군중제어","쿨타임 조작","디버프","각성 대응"],"awaken":true,"desc":"쿨타임 : 60초\n능력 : 가장 가까운 10칸 이내의 엔티티 2명을 물 감옥 생성\n\n\n< 각성 후 >\n\n쿨타임 : 60초\n능력 : 가장 가까운 10칸 이내의 엔티티 3명을 흑요석 감옥 생성하고 쿨타임 45초와 위더 7초 부여","rich":"[ C Rank§f ] 포세이돈\n\n§d쿨타임 : 60초\n§7능력 : 가장 가까운 10칸 이내의 엔티티 2명을 물 감옥 생성\n\n\n§r< §b각성 후§r >\n\n§d쿨타임 : 60초\n§7능력 : 가장 가까운 §b10§7칸 이내의 엔티티 §b3§7명을 §b흑요석§7 감옥 생성하고 §b쿨타임 45초와 위더 7초§7 부여","file":"ability_water_king.json"},{"id":"kr:ability_water_king_up","name":"포세이돈 각성 확인서","rank":"C","cd":"—","cds":null,"cdk":"none","cat":"awaken","tags":[],"awaken":false,"desc":"땅 클릭 시 이 아이템은 사라지며, 앞으로 포세이돈 능력이 영구적으로 각성됩니다.","rich":"[ C Rank§f ] 포세이돈 §b각성 확인서\n\n§d땅 클릭 시 이 아이템은 사라지며, 앞으로 포세이돈 능력이 영구적으로 각성됩니다.","file":"ability_water_king_up.json"},{"id":"kr:ability_apolon","name":"아폴론","rank":"D","cd":"30초","cds":30,"cdk":"active","cat":"core","tags":["광역"],"awaken":false,"desc":"쿨타임 : 30초\n능력 : 20칸 이내의 모든 엔티티에게 불을 붙힘","rich":"[ §7D Rank§f ] 아폴론\n\n§d쿨타임 : 30초\n§7능력 : 20칸 이내의 모든 엔티티에게 불을 붙힘","file":"ability_apolon.json"},{"id":"kr:ability_blue","name":"현무","rank":"D","cd":"없음","cds":0,"cdk":"nocd","cat":"core","tags":["상시"],"awaken":false,"desc":"쿨타임 : 없음\n능력 : 수중호흡 2 부여","rich":"[ §7D Rank§f ] 현무\n\n§d쿨타임 : 없음\n§7능력 : 수중호흡 2 부여","file":"ability_blue.json"}];
+
+/* RPG 서버와 동일한 후원 배율 (변경 금지 · RPG 도감과 1:1 동기화) */
+const DONATE = [{"amount":1000,"mult":2,"note":""},{"amount":10000,"mult":2.75,"note":""},{"amount":30000,"mult":3.35,"note":""},{"amount":50000,"mult":4.45,"note":"인기"},{"amount":100000,"mult":6,"note":"최고 배율"},{"amount":250000,"mult":10,"note":""},{"amount":400000,"mult":20,"note":""}];
+
+/* ── 기본 유틸 ── */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf=n=>Number(n||0).toLocaleString("ko-KR");
+let toastT;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),1900);}
+function copy(txt,msg){
+  const done=()=>toast(msg||"복사했습니다");
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(done).catch(()=>fb());}
+  else fb();
+  function fb(){const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){toast("복사 실패 — 직접 선택해 주세요");}ta.remove();}
+}
+function dl(name,text,type){
+  const b=new Blob([text],{type:type||"text/plain;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+
+/* ── 랭크 ── */
+const RANKS=["X","L","SS+","SS","S","A","B","C","D","Event"];
+const RK_CLS={"D":"rk-D","C":"rk-C","B":"rk-B","A":"rk-A","S":"rk-S","SS":"rk-SS","SS+":"rk-SSP","L":"rk-L","X":"rk-X","Event":"rk-EV"};
+const RK_VAR={"D":"var(--r-D)","C":"var(--r-C)","B":"var(--r-B)","A":"var(--r-A)","S":"var(--r-S)","SS":"var(--r-SS)","SS+":"var(--r-SSP)","L":"var(--r-L)","X":"var(--r-X)","Event":"var(--r-EV)"};
+const RK_DESC={
+  "D":"입문 등급 · 이동/생존 보조 위주","C":"기초 등급 · 조각 합성으로 교환 가능",
+  "B":"중급 등급 · 단일 대상 제어와 이동","A":"상급 등급 · 광역 제어와 자원 전환",
+  "S":"고급 등급 · 전투 주력 · 약탈 대상 상한","SS":"희귀 등급 · 판을 뒤집는 광역/처형",
+  "SS+":"최상위 등급 · 상시 지배형 다수 포함","L":"전설 등급 · 영역전개 · 부활 계열",
+  "X":"규격 외 등급 · 게임 규칙 자체를 비틂","Event":"이벤트 한정 · 기간·조건부 지급"
+};
+const rkCls=r=>RK_CLS[r]||"rk-NA";
+const rkVar=r=>RK_VAR[r]||"var(--faint)";
+const rkIdx=r=>{const i=RANKS.indexOf(r);return i<0?99:i;};
+
+/* ── 마인크래프트 § 코드 렌더 ── */
+const MC={"0":"#000","1":"#00A","2":"#0A0","3":"#0AA","4":"#A00","5":"#A0A","6":"#FA0","7":"#AAA",
+"8":"#555","9":"#55F","a":"#5F5","b":"#5FF","c":"#F55","d":"#F5F","e":"#FF5","f":"#FFF",
+"g":"#DDD605","h":"#E3D4D1","i":"#CECACA","j":"#443A3B","m":"#971607","n":"#B4684D","p":"#DEB12D",
+"q":"#47A036","s":"#2CBAA8","t":"#21497B","u":"#9A5CC6","v":"#EB7114"};
+function mcRender(str){
+  let out="",color="#FFF",bold=false,ital=false,obf=false,open=false;
+  const close=()=>{if(open){out+="</span>";open=false;}};
+  const openS=()=>{close();out+=`<span class="${bold?"b ":""}${ital?"i ":""}${obf?"ob":""}" style="color:${color}">`;open=true;};
+  openS();
+  const s=String(str||"");
+  for(let i=0;i<s.length;i++){
+    if(s[i]==="§"&&i+1<s.length){
+      const c=s[++i].toLowerCase();
+      if(MC[c]){color=MC[c];bold=false;ital=false;obf=false;openS();}
+      else if(c==="l"){bold=true;openS();}
+      else if(c==="o"){ital=true;openS();}
+      else if(c==="k"){obf=true;openS();}
+      else if(c==="r"){color="#FFF";bold=false;ital=false;obf=false;openS();}
+      continue;
+    }
+    out+=esc(s[i]);
+  }
+  close();return out;
+}
+
+/* ── 능력 파생 필드 ── */
+AB.forEach(a=>{
+  const lines=(a.desc||"").split("\n").map(l=>l.trim()).filter(Boolean);
+  const skip=l=>/^쿨타임\s*[:·]/.test(l)||/^패시브$/.test(l)||/^능력\s*[:·]?\s*$/.test(l)||/^<.*>$/.test(l);
+  let sum="";
+  const i=lines.findIndex(l=>/^능력\s*[:·]/.test(l));
+  if(i>=0){
+    sum=lines[i].replace(/^능력\s*[:·]?\s*/,"").trim();
+    // 「능력 :」 뒤가 비어 있고 아래에 불릿으로 나열되는 형태
+    for(let j=i+1;j<lines.length&&sum.length<70;j++){
+      if(skip(lines[j]))continue;
+      sum=(sum?sum+" ":"")+lines[j].replace(/^[ㆍ·•\-]\s*/,"");
+    }
+  }
+  if(!sum) sum=lines.filter(l=>!skip(l)).slice(0,2).join(" ");
+  a.sum=sum||a.desc||"";
+  a.q=(a.name+" "+a.id+" "+a.desc+" "+a.tags.join(" ")+" "+a.rank).toLowerCase();
+});
+const CORE=AB.filter(a=>a.cat==="core");
+const EVENTS=AB.filter(a=>a.cat==="event");
+const LOCKED=AB.filter(a=>a.cat==="locked");
+const CERTS=AB.filter(a=>a.cat==="awaken");
+const PICKABLE=AB.filter(a=>a.cat!=="material");
+
+/* ══════════ 탭 ══════════ */
+const VIEWS=["home","codex","event","awaken","donate","balance"];
+function go(v,opt){
+  if(!VIEWS.includes(v))v="home";
+  $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.v===v));
+  $$(".view").forEach(s=>s.classList.toggle("active",s.dataset.view===v));
+  if(location.hash.slice(1)!==v){try{history.replaceState(null,"","#"+v);}catch(e){}}
+  $(".hero").style.display=(v==="home")?"":"none";   /* 히어로는 개요에서만 */
+  if(!opt||!opt.keep) window.scrollTo({top:0,behavior:"smooth"});
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b)go(b.dataset.v);});
+window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
+
+/* ══════════ 개요 ══════════ */
+(function home(){
+  const st=[
+    [CORE.length,"등록 능력"],
+    [EVENTS.length,"이벤트 능력"],
+    [CERTS.length,"각성 확인서"],
+    [LOCKED.length,"미공개"],
+    [new Set(AB.map(a=>a.rank)).size-1,"랭크 단계"]
+  ];
+  $("#hstats").innerHTML=st.map(([v,l])=>`<div class="hstat"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  const cnt={};AB.forEach(a=>{if(a.cat!=="material")cnt[a.rank]=(cnt[a.rank]||0)+1;});
+  $("#ladder").innerHTML=RANKS.filter(r=>cnt[r]).map(r=>`
+    <div class="lad" style="color:${rkVar(r)}" data-r="${esc(r)}" title="${esc(RK_DESC[r]||"")}">
+      <div class="lr">${esc(r)}</div><div class="lc">${cnt[r]}</div>
+      <div class="ll">${esc((RK_DESC[r]||"").split(" · ")[0])}</div>
+    </div>`).join("");
+  $("#ladder").addEventListener("click",e=>{
+    const d=e.target.closest(".lad");if(!d)return;
+    F.rank=new Set([d.dataset.r]);F.tag=new Set();F.q="";$("#fq").value="";
+    go("codex");syncFilterUI();render();
+  });
+
+  const sample=AB.find(a=>a.id==="kr:ability_shinra")||CORE[0];
+  $("#sampleTip").innerHTML=mcRender(sample.rich);
+
+  // 랭크별 평균 쿨타임
+  const g={};
+  CORE.concat(EVENTS).forEach(a=>{if(a.cds&&a.cds>0){(g[a.rank]=g[a.rank]||[]).push(a.cds);}});
+  const rows=RANKS.filter(r=>g[r]).map(r=>({r,v:Math.round(g[r].reduce((x,y)=>x+y,0)/g[r].length),n:g[r].length}));
+  const mx=Math.max(1,...rows.map(x=>x.v));
+  $("#barCd").innerHTML=rows.map(x=>`
+    <div class="bar"><span class="bl" style="color:${rkVar(x.r)}">${esc(x.r)} <span style="color:var(--faint)">(${x.n})</span></span>
+      <span class="bt"><span class="bf" style="width:${(x.v/mx*100).toFixed(1)}%;background:linear-gradient(90deg,${rkVar(x.r)},var(--cyan))"></span></span>
+      <span class="bv">${x.v}초</span></div>`).join("");
+
+  // 태그 분포
+  const tc={};AB.forEach(a=>a.tags.forEach(t=>tc[t]=(tc[t]||0)+1));
+  const tr=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const tmx=Math.max(1,...tr.map(x=>x[1]));
+  $("#barTag").innerHTML=tr.map(([t,n])=>`
+    <div class="bar"><span class="bl">${esc(t)}</span>
+      <span class="bt"><span class="bf" style="width:${(n/tmx*100).toFixed(1)}%"></span></span>
+      <span class="bv">${n}개</span></div>`).join("");
+})();
+
+/* ══════════ 도감 ══════════ */
+const F={rank:new Set(),tag:new Set(),q:"",sort:"rank"};
+const ALL_TAGS=(()=>{const c={};AB.forEach(a=>a.tags.forEach(t=>c[t]=(c[t]||0)+1));
+  return Object.entries(c).sort((a,b)=>b[1]-a[1]);})();
+
+(function buildFilters(){
+  const cnt={};CORE.forEach(a=>cnt[a.rank]=(cnt[a.rank]||0)+1);
+  $("#fRank").innerHTML=RANKS.filter(r=>cnt[r]).map(r=>
+    `<button class="chip" data-r="${esc(r)}" style="--c:${rkVar(r)}"><span style="color:${rkVar(r)}">${esc(r)}</span><span class="cnt">${cnt[r]}</span></button>`).join("");
+  $("#fTag").innerHTML=ALL_TAGS.map(([t,n])=>
+    `<button class="chip" data-t="${esc(t)}">${esc(t)}<span class="cnt">${n}</span></button>`).join("");
+  $("#fRank").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;
+    F.rank.has(b.dataset.r)?F.rank.delete(b.dataset.r):F.rank.add(b.dataset.r);syncFilterUI();render();});
+  $("#fTag").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;
+    F.tag.has(b.dataset.t)?F.tag.delete(b.dataset.t):F.tag.add(b.dataset.t);syncFilterUI();render();});
+  $("#fq").addEventListener("input",e=>{F.q=e.target.value.trim().toLowerCase();render();});
+  $("#fSort").addEventListener("change",e=>{F.sort=e.target.value;render();});
+  $("#fReset").addEventListener("click",()=>{F.rank.clear();F.tag.clear();F.q="";$("#fq").value="";
+    $("#fSort").value=F.sort="rank";syncFilterUI();render();});
+})();
+function syncFilterUI(){
+  $$("#fRank .chip").forEach(c=>c.classList.toggle("on",F.rank.has(c.dataset.r)));
+  $$("#fTag .chip").forEach(c=>c.classList.toggle("on",F.tag.has(c.dataset.t)));
+  $("#fq").value=F.q;
+}
+function cdCls(a){return a.cdk==="passive"||a.cdk==="passive-cd"?"psv":a.cdk==="nocd"?"non":a.cdk==="unknown"?"unk":"";}
+function cardHTML(a){
+  return `<article class="card" style="color:${rkVar(a.rank)}" data-id="${esc(a.id)}" tabindex="0">
+    ${a.awaken?'<span class="awk" title="각성 가능">🌱</span>':""}
+    <div class="chead"><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span><span class="cname">${esc(a.name)}</span></div>
+    <p class="cdesc">${esc(a.sum)}</p>
+    <div class="cfoot"><span class="cd ${cdCls(a)}">⏱ ${esc(a.cd)}</span>
+      ${a.tags.slice(0,3).map(t=>`<span class="tg">${esc(t)}</span>`).join("")}</div>
+  </article>`;
+}
+function render(){
+  let list=CORE.filter(a=>{
+    if(F.rank.size&&!F.rank.has(a.rank))return false;
+    if(F.tag.size){for(const t of F.tag)if(!a.tags.includes(t))return false;}
+    if(F.q&&!a.q.includes(F.q))return false;
+    return true;
+  });
+  const S=F.sort;
+  list.sort((a,b)=>{
+    if(S==="rank")return rkIdx(a.rank)-rkIdx(b.rank)||a.name.localeCompare(b.name,"ko");
+    if(S==="rank-asc")return rkIdx(b.rank)-rkIdx(a.rank)||a.name.localeCompare(b.name,"ko");
+    if(S==="name")return a.name.localeCompare(b.name,"ko");
+    const av=a.cds==null?1e9:a.cds, bv=b.cds==null?1e9:b.cds;
+    return S==="cd"?av-bv||a.name.localeCompare(b.name,"ko"):bv-av||a.name.localeCompare(b.name,"ko");
+  });
+  $("#fMeta").innerHTML=`<b>${list.length}</b> / ${CORE.length}`;
+  $("#grid").innerHTML=list.length?list.map(cardHTML).join(""):
+    `<div class="empty" style="grid-column:1/-1"><div class="big">🔍</div>조건에 맞는 능력이 없습니다.<br><span style="font-size:12px">필터를 줄이거나 검색어를 바꿔 보세요.</span></div>`;
+}
+render();
+
+/* 카드 → 모달 */
+document.addEventListener("click",e=>{const c=e.target.closest(".card");if(c)openAb(c.dataset.id);});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){const c=document.activeElement&&document.activeElement.closest&&document.activeElement.closest(".card");if(c)openAb(c.dataset.id);}
+  if(e.key==="Escape")closeMask();
+  if(e.key==="/"&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||""))){e.preventDefault();$("#gs").focus();}
+});
+function closeMask(){$("#mask").classList.remove("on");document.body.style.overflow="";}
+$("#mask").addEventListener("click",e=>{if(e.target.id==="mask")closeMask();});
+
+function openAb(id){
+  const a=AB.find(x=>x.id===id);if(!a)return;
+  const tiers=a.grp?AB.filter(x=>x.grp===a.grp).sort((x,y)=>x.tier-y.tier):[];
+  $("#modal").innerHTML=`
+    <div class="mhead" style="color:${rkVar(a.rank)}">
+      <button class="xbtn" onclick="closeMask()">✕</button>
+      <div class="mt"><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span><h3 style="color:var(--text)">${esc(a.name)}</h3>
+        ${a.awaken?'<span class="dn-note">🌱 각성 가능</span>':""}
+        ${a.tier?`<span class="dn-note">${a.tier}단계 / ${a.tierMax}</span>`:""}</div>
+      <div class="mid">${esc(a.id)}</div>
+    </div>
+    <div class="mbody">
+      <dl class="kv">
+        <dt>랭크</dt><dd><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span>
+          <span style="color:var(--faint);font-size:12px;margin-left:7px">${esc(RK_DESC[a.rank]||"")}</span></dd>
+        <dt>쿨타임</dt><dd><span class="cd ${cdCls(a)}">⏱ ${esc(a.cd)}</span></dd>
+        <dt>효과 유형</dt><dd>${a.tags.length?a.tags.map(t=>`<span class="tg">${esc(t)}</span>`).join(" "):'<span style="color:var(--faint)">—</span>'}</dd>
+      </dl>
+      <label style="margin-bottom:8px">인게임 아이템 설명</label>
+      <div class="mctip">${mcRender(a.rich)}</div>
+      ${tiers.length>1?`<div style="margin-top:18px"><label style="margin-bottom:8px">강화 단계</label>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>단계</th><th>쿨타임</th><th>아이디</th></tr></thead><tbody>
+        ${tiers.map(t=>`<tr${t.id===a.id?' style="background:rgba(139,107,255,.1)"':''}><td><b>${t.tier}단계</b></td>
+          <td><span class="cd ${cdCls(t)}">${esc(t.cd)}</span></td>
+          <td style="font-family:var(--f-mono);font-size:11px;color:var(--faint)">${esc(t.id)}</td></tr>`).join("")}
+        </tbody></table></div></div>`:""}
+    </div>
+    <div class="mfoot">
+      <button class="btn pri" data-act="suggest">🛠️ 이 능력으로 건의서 작성</button>
+      <button class="btn" data-act="copyid">📋 아이디 복사</button>
+      <button class="btn ghost" onclick="closeMask()">닫기</button>
+    </div>`;
+  $("#modal").querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.act==="copyid")copy(a.id,"아이디를 복사했습니다");
+    if(b.dataset.act==="suggest"){closeMask();go("balance");pickAbility(a);setTimeout(()=>$("#st2").scrollIntoView({block:"center"}),320);}
+  }));
+  $("#mask").classList.add("on");document.body.style.overflow="hidden";
+}
+window.closeMask=closeMask;
+
+/* 전역 검색 */
+$("#gs").addEventListener("input",e=>{
+  const v=e.target.value.trim();
+  if(!v)return;
+  F.q=v.toLowerCase();F.rank.clear();F.tag.clear();
+  if(!$('.view[data-view="codex"]').classList.contains("active"))go("codex",{keep:true});
+  syncFilterUI();render();
+});
+
+/* ══════════ 이벤트 ══════════ */
+(function evView(){
+  const gs={};EVENTS.forEach(a=>(gs[a.grp]=gs[a.grp]||[]).push(a));
+  $("#evGroups").innerHTML=Object.keys(gs).sort((a,b)=>a-b).map(k=>{
+    const g=gs[k].sort((a,b)=>a.tier-b.tier), h=g[0];
+    return `<div class="panel" style="padding:18px 20px;margin-bottom:13px;color:${rkVar(h.rank)}">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:11px">
+        <span class="rk ${rkCls(h.rank)}">${esc(h.rank)}</span>
+        <b style="font-family:var(--f-disp);font-size:15px;color:var(--text)">${esc(h.name)}</b>
+        <span class="tg">${g.length}단계</span></div>
+      <p style="font-size:13px;color:var(--dim);margin-bottom:14px">${esc(h.sum)}</p>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>단계</th><th>쿨타임</th><th>변화</th><th>아이디</th></tr></thead><tbody>
+      ${g.map((t,i)=>{
+        const prev=i>0?g[i-1]:null;
+        let diff='<span style="color:var(--faint)">기본</span>';
+        if(prev&&t.cds!=null&&prev.cds!=null){
+          const d=prev.cds-t.cds;
+          diff=d>0?`<span style="color:#5ee68f">▼ ${d}초 단축</span>`:d<0?`<span style="color:#ff8b8b">▲ ${-d}초 증가</span>`:'<span style="color:var(--faint)">동일</span>';
+        }
+        return `<tr data-open="${esc(t.id)}" style="cursor:pointer"><td><b>${t.tier}단계</b></td>
+          <td><span class="cd ${cdCls(t)}">${esc(t.cd)}</span></td><td>${diff}</td>
+          <td style="font-family:var(--f-mono);font-size:11px;color:var(--faint)">${esc(t.id)}</td></tr>`;}).join("")}
+      </tbody></table></div></div>`;
+  }).join("");
+  $("#evGroups").addEventListener("click",e=>{const tr=e.target.closest("[data-open]");if(tr)openAb(tr.dataset.open);});
+  $("#lockGrid").innerHTML=LOCKED.length?LOCKED.sort((a,b)=>rkIdx(a.rank)-rkIdx(b.rank)).map(a=>
+    `<article class="card" style="color:${rkVar(a.rank)}" data-id="${esc(a.id)}" tabindex="0">
+      <div class="chead"><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span><span class="cname" style="letter-spacing:.2em">???</span></div>
+      <p class="cdesc">아직 공개되지 않은 능력입니다. 등급만 확정되어 있어요.</p>
+      <div class="cfoot"><span class="cd unk">⏱ ???</span><span class="tg">미공개</span></div></article>`).join("")
+    :`<div class="empty" style="grid-column:1/-1">미공개 능력이 없습니다.</div>`;
+})();
+
+/* ══════════ 각성 ══════════ */
+(function awakenView(){
+  const list=CORE.filter(a=>a.awaken);
+  $("#awakenList").innerHTML=list.map(a=>{
+    const parts=a.desc.split(/<\s*각성 후\s*>/);
+    const before=(parts[0]||"").trim(), after=(parts[1]||"").trim();
+    const pick=t=>{const l=t.split("\n").map(x=>x.trim()).filter(Boolean);
+      const cd=(l.find(x=>/^쿨타임\s*:/.test(x))||"").replace(/^쿨타임\s*:\s*/,"")||"—";
+      const ef=(l.find(x=>/^능력\s*:/.test(x))||"").replace(/^능력\s*:\s*/,"")||l.join(" ");
+      return {cd,ef};};
+    const B=pick(before),A2=pick(after);
+    return `<div class="panel" style="padding:18px 20px;margin-bottom:12px;color:${rkVar(a.rank)}">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span>
+        <b style="font-family:var(--f-disp);font-size:15px;color:var(--text)">${esc(a.name)}</b>
+        <span class="tg">🌱 각성 대응</span>
+        <button class="btn sm ghost" style="margin-left:auto" data-id="${esc(a.id)}">상세 보기</button></div>
+      <div class="ba">
+        <div class="now"><label>각성 전</label>
+          <div style="background:var(--void2);border:1px solid var(--line);border-radius:10px;padding:12px 14px">
+            <span class="cd">⏱ ${esc(B.cd)}</span>
+            <p style="font-size:12.5px;color:var(--dim);margin-top:8px">${esc(B.ef)}</p></div></div>
+        <div class="arw">➜</div>
+        <div class="aft"><label>각성 후</label>
+          <div style="background:rgba(63,217,122,.05);border:1px solid rgba(63,217,122,.24);border-radius:10px;padding:12px 14px">
+            <span class="cd">⏱ ${esc(A2.cd)}</span>
+            <p style="font-size:12.5px;color:var(--dim);margin-top:8px">${esc(A2.ef)}</p></div></div>
+      </div></div>`;
+  }).join("")||`<div class="empty">각성 대응 능력이 없습니다.</div>`;
+  $("#awakenList").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(b)openAb(b.dataset.id);});
+
+  $("#certGrid").innerHTML=CERTS.map(a=>
+    `<article class="card" style="color:${rkVar(a.rank)}" data-id="${esc(a.id)}" tabindex="0">
+      <span class="awk">📜</span>
+      <div class="chead"><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span><span class="cname">${esc(a.name)}</span></div>
+      <p class="cdesc">${esc(a.sum)}</p>
+      <div class="cfoot"><span class="tg">각성 확인서</span><span class="tg">1회 사용</span></div></article>`).join("");
+})();
+
+/* ══════════ 후원 배율 ══════════ */
+(function donateView(){
+  const L=DONATE.slice().sort((a,b)=>a.amount-b.amount);
+  $("#dnBody").innerHTML=L.map(d=>{
+    const cls=/최고/.test(d.note)?"top":/인기/.test(d.note)?"hot":"";
+    return `<tr class="dn-row ${cls}">
+      <td><b style="font-family:var(--f-mono);font-size:14px">₩${nf(d.amount)}</b></td>
+      <td><span class="mult">×${d.mult}</span></td>
+      <td class="num" style="color:var(--gold);font-size:14px">${nf(Math.floor(d.amount*d.mult))} 캐쉬</td>
+      <td>${d.note?`<span class="dn-note">${esc(d.note)}</span>`:'<span style="color:var(--faint)">—</span>'}</td></tr>`;
+  }).join("");
+
+  $("#dnQuick").innerHTML=L.map(d=>`<button class="btn sm ghost" data-a="${d.amount}">₩${nf(d.amount)}</button>`).join("")
+    +`<button class="btn sm ghost" data-a="70000">₩70,000</button><button class="btn sm ghost" data-a="150000">₩150,000</button>`;
+  $("#dnQuick").addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;
+    $("#dnAmt").value=b.dataset.a;calc();});
+
+  const mxEff=Math.max(...L.map(d=>d.mult*1000));
+  $("#dnBars").innerHTML=L.map(d=>`
+    <div class="bar"><span class="bl">₩${nf(d.amount)}</span>
+      <span class="bt"><span class="bf" style="width:${(d.mult*1000/mxEff*100).toFixed(1)}%"></span></span>
+      <span class="bv">${nf(d.mult*1000)}</span></div>`).join("");
+
+  function tierFor(a){let t=null;for(const d of L)if(a>=d.amount)t=d;return t;}
+  function calc(){
+    const raw=$("#dnAmt").value.trim();
+    const out=$("#dnOut");
+    if(raw===""){out.className="calc-out empty2";out.innerHTML='<div class="big">금액을 입력하면 받는 캐쉬가 바로 계산됩니다.</div>';return;}
+    const amt=Math.max(0,Math.floor(Number(raw)||0));
+    const t=tierFor(amt);
+    if(!t){out.className="calc-out empty2";
+      out.innerHTML=`<div class="big">최소 후원 금액은 ₩${nf(L[0].amount)}부터예요.</div>`;return;}
+    const cash=Math.floor(amt*t.mult);
+    const base=Math.floor(amt*L[0].mult);
+    out.className="calc-out";
+    out.innerHTML=`<div class="big">${nf(cash)} 캐쉬</div>
+      <div class="sub">₩${nf(amt)} 후원 · 적용 배율 <b style="color:var(--text)">×${t.mult}</b>
+      · 적용 구간 ₩${nf(t.amount)}${t.note?` · ${esc(t.note)}`:""}</div>
+      ${t.mult>L[0].mult?`<div class="sub" style="color:#5ee68f">최저 구간(×${L[0].mult}) 대비 +${nf(cash-base)} 캐쉬</div>`:""}`;
+  }
+  $("#dnGo").addEventListener("click",calc);
+  $("#dnAmt").addEventListener("input",calc);
+  $("#dnAmt").addEventListener("keydown",e=>{if(e.key==="Enter")calc();});
+})();
+
+/* ══════════════════════════════════════════════════════════
+   밸런스 건의 시스템
+   ══════════════════════════════════════════════════════════ */
+const ISSUES=["수치가 과함","수치가 부족함","쿨타임 문제","사거리·범위 문제","지속시간 문제",
+  "카운터가 없음","조합·시너지 문제","조작 난이도","랭크가 안 맞음","버그·오작동","설명과 실제가 다름","서버 렉 유발"];
+const SCENES=["1:1 결투","소규모 난전 (2~5인)","대규모 전쟁 (6인+)","공성·거점","PvE·사냥","경제·파밍","초반 성장 구간"];
+const KIND_LABEL={up:"상향",down:"하향",remake:"리메이크",bug:"버그 · 오작동",new:"신규 제안",etc:"기타"};
+const ST_LABEL={draft:"작성중",sent:"제출됨",review:"검토중",done:"반영",hold:"보류",rej:"반려"};
+const KEY="wildability_balance_reports_v1";
+
+const B={ab:null,kind:"",nick:"",sev:0,issues:new Set(),scenes:new Set(),
+  now:"",after:"",why:"",repro:"",link:"",side:"",rel:"",editing:null};
+
+$("#bIssue").innerHTML=ISSUES.map(t=>`<button class="chip" data-i="${esc(t)}">${esc(t)}</button>`).join("");
+$("#bScene").innerHTML=SCENES.map(t=>`<button class="chip" data-s="${esc(t)}">${esc(t)}</button>`).join("");
+$("#bIssue").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;
+  B.issues.has(b.dataset.i)?B.issues.delete(b.dataset.i):B.issues.add(b.dataset.i);
+  b.classList.toggle("on");upd();});
+$("#bScene").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;
+  B.scenes.has(b.dataset.s)?B.scenes.delete(b.dataset.s):B.scenes.add(b.dataset.s);
+  b.classList.toggle("on");upd();});
+$("#bSev").addEventListener("click",e=>{const b=e.target.closest(".sev");if(!b)return;
+  B.sev=+b.dataset.v;$$("#bSev .sev").forEach(x=>x.classList.toggle("on",+x.dataset.v===B.sev));upd();});
+
+[["bKind","kind"],["bNick","nick"],["bNow","now"],["bAfter","after"],["bWhy","why"],
+ ["bRepro","repro"],["bLink","link"],["bSide","side"],["bRel","rel"]].forEach(([id,k])=>{
+  $("#"+id).addEventListener("input",e=>{B[k]=e.target.value;upd();});
+  $("#"+id).addEventListener("change",e=>{B[k]=e.target.value;upd();});
+});
+
+/* 능력 자동완성 */
+let acIdx=-1,acCur=[];
+const acInput=$("#abSearch"),acList=$("#abList");
+function acRender(q){
+  const s=q.trim().toLowerCase();
+  acCur=(s?PICKABLE.filter(a=>a.q.includes(s)):PICKABLE.slice()).slice(0,40);
+  acIdx=-1;
+  acList.innerHTML=acCur.length?acCur.map((a,i)=>
+    `<div class="acitem" data-i="${i}"><span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span>
+      <span class="an">${esc(a.name)}</span><span class="ac2">${esc(a.cd)}</span></div>`).join("")
+    :`<div class="acitem" style="color:var(--faint);cursor:default">일치하는 능력이 없습니다</div>`;
+  acList.classList.add("on");
+}
+acInput.addEventListener("focus",()=>acRender(acInput.value));
+acInput.addEventListener("input",()=>acRender(acInput.value));
+acInput.addEventListener("keydown",e=>{
+  if(!acList.classList.contains("on"))return;
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();
+    acIdx=Math.max(0,Math.min(acCur.length-1,acIdx+(e.key==="ArrowDown"?1:-1)));
+    $$(".acitem",acList).forEach((n,i)=>n.classList.toggle("cur",i===acIdx));
+    const cn=$$(".acitem",acList)[acIdx];if(cn)cn.scrollIntoView({block:"nearest"});}
+  else if(e.key==="Enter"){e.preventDefault();if(acCur[acIdx>=0?acIdx:0])pickAbility(acCur[acIdx>=0?acIdx:0]);}
+  else if(e.key==="Escape")acList.classList.remove("on");
+});
+acList.addEventListener("click",e=>{const n=e.target.closest(".acitem");if(n&&n.dataset.i!==undefined)pickAbility(acCur[+n.dataset.i]);});
+document.addEventListener("click",e=>{if(!e.target.closest(".acbox"))acList.classList.remove("on");});
+
+function pickAbility(a){
+  B.ab=a;acInput.value="";acList.classList.remove("on");
+  const p=$("#abPicked");p.className="picked";
+  p.innerHTML=`<span class="rk ${rkCls(a.rank)}">${esc(a.rank)}</span>
+    <span class="pn">${esc(a.name)}</span>
+    <span class="cd ${cdCls(a)}">⏱ ${esc(a.cd)}</span>
+    <button class="btn sm ghost" id="abView">보기</button>
+    <button class="btn sm ghost" id="abDrop">✕</button>`;
+  $("#abView").addEventListener("click",()=>openAb(a.id));
+  $("#abDrop").addEventListener("click",()=>{B.ab=null;
+    $("#abPicked").className="picked none";$("#abPicked").textContent="아직 선택된 능력이 없습니다";upd();});
+  if(!B.now)$("#bNow").value=B.now=`쿨타임 ${a.cd} / ${a.sum}`;
+  upd();
+}
+
+/* 완성도 */
+const CHECKS=[
+  {k:"ab",w:16,l:"대상 능력",ok:()=>!!B.ab},
+  {k:"kind",w:10,l:"건의 유형",ok:()=>!!B.kind},
+  {k:"sev",w:8,l:"심각도",ok:()=>B.sev>0},
+  {k:"issue",w:12,l:"문제 유형",ok:()=>B.issues.size>0},
+  {k:"scene",w:10,l:"발생 상황",ok:()=>B.scenes.size>0},
+  {k:"now",w:12,l:"현재 수치",ok:()=>B.now.trim().length>=6},
+  {k:"after",w:14,l:"제안 수치",ok:()=>B.after.trim().length>=6},
+  {k:"why",w:18,l:"근거",ok:()=>B.why.trim().length>=20},
+];
+const BONUS=[
+  {w:5,ok:()=>B.side.trim().length>=15},
+  {w:3,ok:()=>!!B.repro},
+  {w:2,ok:()=>!!B.nick.trim()},
+];
+function score(){
+  let s=0;const miss=[];
+  CHECKS.forEach(c=>{if(c.ok())s+=c.w;else miss.push(c.l);});
+  BONUS.forEach(b=>{if(b.ok())s+=b.w;});
+  return {s:Math.min(100,Math.round(s)),miss};
+}
+const RING=2*Math.PI*33;
+function upd(){
+  const {s,miss}=score();
+  $("#ringFill").style.strokeDashoffset=String(RING*(1-s/100));
+  $("#ringVal").textContent=s+"%";
+  $("#ringVal").style.color=s>=80?"#5ee68f":s>=50?"var(--gold)":"var(--dim)";
+  $("#scoreTitle").textContent=s>=90?"바로 제출 가능":s>=80?"제출해도 좋아요":s>=50?"조금만 더":"건의 완성도";
+  $("#scoreDesc").textContent=s>=80?"운영진이 검토하기 충분한 정보예요.":"아래 항목을 채우면 검토가 빨라집니다.";
+  $("#missing").innerHTML=miss.slice(0,6).map(m=>`<i>${esc(m)} 없음</i>`).join("");
+  [["st1",()=>!!B.ab],["st2",()=>!!B.kind&&B.sev>0],["st3",()=>B.issues.size>0],
+   ["st4",()=>B.scenes.size>0],["st5",()=>B.now.trim().length>=6&&B.after.trim().length>=6],
+   ["st6",()=>B.why.trim().length>=20],["st7",()=>B.side.trim().length>=15]]
+   .forEach(([id,f])=>$("#"+id).classList.toggle("done",f()));
+  $("#bOut").textContent=buildText(fmt);
+}
+
+/* 출력 포맷 */
+let fmt="plain";
+$("#fmtSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  fmt=b.dataset.f;$$("#fmtSeg button").forEach(x=>x.classList.toggle("on",x===b));upd();});
+
+function ind(t){return String(t||"").trim().split("\n").map(l=>"  "+l).join("\n");}
+function buildText(mode){
+  if(!B.ab)return "대상 능력을 선택하면 여기에 건의서가 만들어집니다.";
+  const a=B.ab, {s}=score();
+  const d=new Date(), date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const stars="★".repeat(B.sev)+"☆".repeat(5-B.sev);
+  const kind=KIND_LABEL[B.kind]||"미지정";
+  if(mode==="md"){
+    return `## 🛠️ 밸런스 건의 · ${a.name}\n\n`+
+      `| 항목 | 내용 |\n|---|---|\n`+
+      `| **대상** | \`${a.name}\` (${a.rank} / \`${a.id}\`) |\n`+
+      `| **현재 쿨타임** | ${a.cd} |\n`+
+      `| **건의 유형** | ${kind} |\n`+
+      `| **심각도** | ${B.sev?`${stars} (${B.sev}/5)`:"미지정"} |\n`+
+      `| **문제 유형** | ${[...B.issues].join(", ")||"—"} |\n`+
+      `| **발생 상황** | ${[...B.scenes].join(", ")||"—"} |\n`+
+      `| **재현성** | ${B.repro||"—"} |\n\n`+
+      `### 현재 (AS-IS)\n\`\`\`\n${B.now.trim()||"—"}\n\`\`\`\n\n`+
+      `### 제안 (TO-BE)\n\`\`\`\n${B.after.trim()||"—"}\n\`\`\`\n\n`+
+      `### 근거 · 관측 사례\n${B.why.trim()||"—"}\n\n`+
+      `### 예상 영향 · 부작용\n${B.side.trim()||"—"}\n\n`+
+      (B.rel.trim()?`**연관 능력** : ${B.rel.trim()}\n\n`:"")+
+      (B.link.trim()?`**참고 자료** : ${B.link.trim()}\n\n`:"")+
+      `---\n작성자 \`${B.nick||"익명"}\` · ${date} · 완성도 ${s}%`;
+  }
+  if(mode==="mc"){
+    return `§6[ 밸런스 건의 ]§f ${a.name}\n`+
+      `§7대상 : §f${a.name} §7(${a.rank})\n`+
+      `§7유형 : §f${kind}  §7심각도 : §c${B.sev||"-"}/5\n`+
+      `§7문제 : §f${[...B.issues].join(", ")||"-"}\n`+
+      `§7상황 : §f${[...B.scenes].join(", ")||"-"}\n`+
+      `§c현재 : §f${(B.now.trim()||"-").replace(/\n/g," / ")}\n`+
+      `§a제안 : §f${(B.after.trim()||"-").replace(/\n/g," / ")}\n`+
+      `§7근거 : §f${(B.why.trim()||"-").replace(/\n/g," ")}\n`+
+      `§8작성 : ${B.nick||"익명"} · ${date}`;
+  }
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`+
+    `  야생 능력자 · 능력 밸런스 건의서\n`+
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`+
+    `■ 대상 능력 : ${a.name}  [${a.rank}]\n`+
+    `   아이디    : ${a.id}\n`+
+    `   현재 쿨타임 : ${a.cd}\n\n`+
+    `■ 건의 유형 : ${kind}\n`+
+    `■ 심각도    : ${B.sev?`${stars}  (${B.sev}/5)`:"미지정"}\n`+
+    `■ 문제 유형 : ${[...B.issues].join(" / ")||"—"}\n`+
+    `■ 발생 상황 : ${[...B.scenes].join(" / ")||"—"}\n`+
+    `■ 재현성    : ${B.repro||"—"}\n\n`+
+    `─────────────────────────────────\n`+
+    `[ 현재 · AS-IS ]\n${ind(B.now)||"  —"}\n\n`+
+    `[ 제안 · TO-BE ]\n${ind(B.after)||"  —"}\n`+
+    `─────────────────────────────────\n\n`+
+    `■ 근거 · 관측 사례\n${ind(B.why)||"  —"}\n\n`+
+    `■ 예상 영향 · 부작용\n${ind(B.side)||"  —"}\n`+
+    (B.rel.trim()?`\n■ 연관 능력 : ${B.rel.trim()}\n`:"")+
+    (B.link.trim()?`■ 참고 자료 : ${B.link.trim()}\n`:"")+
+    `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`+
+    `작성자 : ${B.nick||"익명"}   |   ${date}   |   완성도 ${s}%\n`+
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+}
+$("#bCopy").addEventListener("click",()=>{
+  if(!B.ab){toast("먼저 대상 능력을 선택해 주세요");return;}
+  copy(buildText(fmt),"건의서를 복사했습니다 · 건의 채널에 붙여넣어 주세요");
+});
+$("#bDl").addEventListener("click",()=>{
+  if(!B.ab){toast("먼저 대상 능력을 선택해 주세요");return;}
+  dl(`밸런스건의_${B.ab.name}_${Date.now()}.txt`,buildText(fmt));
+});
+$("#bClear").addEventListener("click",()=>{
+  if(!confirm("작성 중인 내용을 모두 지울까요?"))return;
+  resetForm();toast("비웠습니다");
+});
+function resetForm(){
+  B.ab=null;B.kind="";B.sev=0;B.issues.clear();B.scenes.clear();B.editing=null;
+  ["now","after","why","repro","link","side","rel"].forEach(k=>B[k]="");
+  ["bNow","bAfter","bWhy","bRepro","bLink","bSide","bRel","bKind"].forEach(id=>$("#"+id).value="");
+  $$("#bIssue .chip,#bScene .chip").forEach(c=>c.classList.remove("on"));
+  $$("#bSev .sev").forEach(c=>c.classList.remove("on"));
+  $("#abPicked").className="picked none";$("#abPicked").textContent="아직 선택된 능력이 없습니다";
+  $("#bSave").textContent="💾 보관함에 저장";
+  upd();
+}
+
+/* ── 보관함 ── */
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]");}catch(e){return [];}}
+function save(l){try{localStorage.setItem(KEY,JSON.stringify(l));}catch(e){toast("저장 공간이 부족합니다");}}
+$("#bSave").addEventListener("click",()=>{
+  if(!B.ab){toast("먼저 대상 능력을 선택해 주세요");return;}
+  const {s}=score();
+  const rec={
+    id:B.editing||("r"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
+    at:B.editing?(load().find(x=>x.id===B.editing)||{}).at||Date.now():Date.now(),
+    up:Date.now(), status:B.editing?(load().find(x=>x.id===B.editing)||{}).status||"draft":"draft",
+    abId:B.ab.id, abName:B.ab.name, abRank:B.ab.rank, abCd:B.ab.cd,
+    kind:B.kind, nick:B.nick, sev:B.sev, issues:[...B.issues], scenes:[...B.scenes],
+    now:B.now, after:B.after, why:B.why, repro:B.repro, link:B.link, side:B.side, rel:B.rel, score:s
+  };
+  const l=load();const i=l.findIndex(x=>x.id===rec.id);
+  if(i>=0)l[i]=rec;else l.unshift(rec);
+  save(l);renderReps();
+  toast(B.editing?"수정했습니다":"보관함에 저장했습니다");
+  B.editing=rec.id;$("#bSave").textContent="💾 수정 저장";
+});
+function loadInto(r){
+  const a=AB.find(x=>x.id===r.abId);
+  if(a)pickAbility(a);
+  B.kind=r.kind||"";$("#bKind").value=B.kind;
+  B.nick=r.nick||"";$("#bNick").value=B.nick;
+  B.sev=r.sev||0;$$("#bSev .sev").forEach(x=>x.classList.toggle("on",+x.dataset.v===B.sev));
+  B.issues=new Set(r.issues||[]);B.scenes=new Set(r.scenes||[]);
+  $$("#bIssue .chip").forEach(c=>c.classList.toggle("on",B.issues.has(c.dataset.i)));
+  $$("#bScene .chip").forEach(c=>c.classList.toggle("on",B.scenes.has(c.dataset.s)));
+  ["now","after","why","repro","link","side","rel"].forEach(k=>{B[k]=r[k]||"";});
+  $("#bNow").value=B.now;$("#bAfter").value=B.after;$("#bWhy").value=B.why;
+  $("#bRepro").value=B.repro;$("#bLink").value=B.link;$("#bSide").value=B.side;$("#bRel").value=B.rel;
+  B.editing=r.id;$("#bSave").textContent="💾 수정 저장";
+  upd();$("#st1").scrollIntoView({block:"center",behavior:"smooth"});
+}
+function repText(r){
+  const bk=B.ab,bs={...B};
+  const a=AB.find(x=>x.id===r.abId)||{name:r.abName,rank:r.abRank,cd:r.abCd,id:r.abId,sum:""};
+  Object.assign(B,{ab:a,kind:r.kind,nick:r.nick,sev:r.sev,issues:new Set(r.issues||[]),
+    scenes:new Set(r.scenes||[]),now:r.now,after:r.after,why:r.why,repro:r.repro,link:r.link,side:r.side,rel:r.rel});
+  const t=buildText(fmt);
+  Object.assign(B,bs);B.ab=bk;
+  return t;
+}
+function renderReps(){
+  const l=load();
+  const q=($("#repQ").value||"").trim().toLowerCase();
+  const f=$("#repFilter").value;
+  const view=l.filter(r=>(!f||r.status===f)&&
+    (!q||(r.abName+" "+(r.why||"")+" "+(r.after||"")+" "+(r.nick||"")).toLowerCase().includes(q)));
+  $("#repMeta").innerHTML=`<b>${view.length}</b> / ${l.length} 건`;
+  $("#repList").innerHTML=view.length?view.map(r=>{
+    const d=new Date(r.up||r.at);
+    return `<div class="rep" data-id="${esc(r.id)}">
+      <span class="rk ${rkCls(r.abRank)}" style="margin-top:2px">${esc(r.abRank)}</span>
+      <div class="rmain">
+        <div class="rt">${esc(r.abName)}
+          <span class="kind ${esc(r.kind||"etc")}" style="margin-left:6px">${esc(KIND_LABEL[r.kind]||"기타")}</span>
+          ${r.sev?`<span class="tg" style="margin-left:4px">심각도 ${r.sev}</span>`:""}</div>
+        <div class="rm">${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}
+          · 완성도 ${r.score||0}% · ${esc(r.nick||"익명")}</div>
+        <div class="rx">${esc((r.after||r.why||"").replace(/\n/g," "))}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <select class="fsel" data-act="st" style="padding:4px 8px;font-size:11.5px;width:96px">
+          ${Object.entries(ST_LABEL).map(([k,v])=>`<option value="${k}"${r.status===k?" selected":""}>${v}</option>`).join("")}
+        </select>
+        <div style="display:flex;gap:5px">
+          <button class="btn sm ghost" data-act="copy">📋</button>
+          <button class="btn sm ghost" data-act="edit">✏️</button>
+          <button class="btn sm danger" data-act="del">🗑</button>
+        </div>
+      </div></div>`;
+  }).join(""):`<div class="empty"><div class="big">📭</div>저장된 건의서가 없습니다.<br>
+    <span style="font-size:12px">위에서 작성한 뒤 <b>보관함에 저장</b>을 눌러보세요.</span></div>`;
+}
+$("#repList").addEventListener("click",e=>{
+  const btn=e.target.closest("[data-act]");if(!btn)return;
+  const id=e.target.closest(".rep").dataset.id;
+  const l=load();const r=l.find(x=>x.id===id);if(!r)return;
+  const act=btn.dataset.act;
+  if(act==="copy")copy(repText(r),"건의서를 복사했습니다");
+  if(act==="edit")loadInto(r);
+  if(act==="del"){if(!confirm(`"${r.abName}" 건의를 삭제할까요?`))return;
+    save(l.filter(x=>x.id!==id));renderReps();toast("삭제했습니다");}
+});
+$("#repList").addEventListener("change",e=>{
+  const sel=e.target.closest('[data-act="st"]');if(!sel)return;
+  const id=e.target.closest(".rep").dataset.id;
+  const l=load();const r=l.find(x=>x.id===id);if(!r)return;
+  r.status=sel.value;r.up=Date.now();save(l);renderReps();toast("상태를 "+ST_LABEL[r.status]+"(으)로 바꿨습니다");
+});
+$("#repQ").addEventListener("input",renderReps);
+$("#repFilter").addEventListener("change",renderReps);
+$("#repExport").addEventListener("click",()=>{
+  const l=load();if(!l.length){toast("내보낼 건의가 없습니다");return;}
+  dl(`야생능력자_밸런스건의_${new Date().toISOString().slice(0,10)}.json`,
+     JSON.stringify({v:1,exported:new Date().toISOString(),reports:l},null,2),"application/json");
+  toast(`${l.length}건을 내보냈습니다`);
+});
+$("#repImport").addEventListener("click",()=>$("#repFile").click());
+$("#repFile").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result);
+      const inc=Array.isArray(j)?j:(j.reports||[]);
+      if(!inc.length){toast("가져올 건의가 없습니다");return;}
+      const l=load();const ids=new Set(l.map(x=>x.id));
+      let n=0;inc.forEach(r=>{if(r&&r.abId&&!ids.has(r.id)){l.unshift(r);n++;}});
+      save(l);renderReps();toast(`${n}건을 가져왔습니다`);
+    }catch(err){toast("파일을 읽을 수 없습니다");}
+    e.target.value="";
+  };
+  rd.readAsText(f);
+});
+renderReps();upd();
+
+/* 최초 진입 시 해시 뷰 복원 (#codex, #donate …) */
+if(location.hash.slice(1))go(location.hash.slice(1),{keep:true});
+</script>
+</body></html>
